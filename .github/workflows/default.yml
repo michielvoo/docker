@@ -1,0 +1,23 @@
+name: default
+
+on:
+  push:
+    tags:
+      - "*/*"
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          repository=$(echo $GITHUB_REPOSITORY | sed -En "s/^(.+)\/(.+)$/\1/p")
+          name=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\1/p")
+          tag=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\2/p")
+          pushd "$name"
+          docker build --tag "$repository/$name:$tag" .
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push "$repository/$name:$tag"
