@@ -14,10 +14,10 @@ jobs:
 
       - name: Build
         run: |
-          repository=$(echo $GITHUB_REPOSITORY | sed -En "s/^(.+)\/(.+)$/\1/p")
-          name=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\1/p")
+          registry=$(echo $GITHUB_REPOSITORY | sed -En "s/^(.+)\/(.+)$/\1/p")
+          repository=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\1/p")
           tag=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\2/p")
-          pushd "$name"
-          docker build --tag "$repository/$name:$tag" .
+          pushd "$repository"
+          docker build --tag "$registry/$repository:$tag" .
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push "$repository/$name:$tag"
+          docker push "$registry/$repository:$tag"
