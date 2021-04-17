@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build Docker image
+      - name: Build and push Docker image
         run: |
           registry=$(echo $GITHUB_REPOSITORY | sed -En "s/^(.+)\/(.+)$/\1/p")
           repository=$(echo $GITHUB_REF | sed -En "s/^refs\/tags\/(.+)\/(.+)$/\1/p")
@@ -21,7 +21,5 @@ jobs:
           pushd "$repository"
           docker build --tag "$registry/$repository:$tag" --build-arg commit=$commit .
 
-      - name: Push Docker image
-        run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker push "$registry/$repository:$tag"
