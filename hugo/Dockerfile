@@ -1,7 +1,7 @@
 FROM alpine:3.13.0
 
-ARG commit
-LABEL Commit=$commit
+LABEL org.opencontainers.image.title="Hugo"
+LABEL org.opencontainers.image.description="Hugo Extended and Git on Alpine Linux, for building static websites"
 
 RUN apk update --no-cache \
     && apk add git=2.30.2-r0 --no-cache \

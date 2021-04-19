@@ -6,7 +6,7 @@ Bespoke Docker images
 
 This Git repository contains definitions for Docker images, as well as a GitHub workflow that 
 builds the Docker images and pushes them to the Docker registry on Docker Hub][hub] that 
-corresponds to the GitHub repository's profile. 
+corresponds to the GitHub repository's owner. 
 
 Pushing any Git tag that consists of two segments separated by `/` will trigger the workflow. The 
 first segment should match both a top-level directory in this Git repository that contains a 

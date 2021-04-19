@@ -14,7 +14,7 @@ Find the versions of Hugo and Git for the current stable version of Alpine
 Linux [here](https://pkgs.alpinelinux.org/packages), update the Dockerfile, and 
 build the Docker image:
 
-`docker build -t michielvoo/hugo --build-arg commit=$(git rev-parse --short HEAD) .`
+`docker build -t michielvoo/hugo .`
 
 Run the local image to check the Hugo version:
 
