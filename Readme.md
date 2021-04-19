@@ -5,7 +5,7 @@ Bespoke Docker images
 ![default workflow][badge]
 
 This Git repository contains definitions for Docker images, as well as a GitHub workflow that 
-builds the Docker images and pushes them to the Docker registry on Docker Hub][hub] that 
+builds the Docker images and pushes them to the Docker registry on [Docker Hub][hub] that 
 corresponds to the GitHub repository's owner. 
 
 Pushing any Git tag that consists of two segments separated by `/` will trigger the workflow. The 
@@ -18,24 +18,32 @@ Docker tag to the Docker image before it is pushed.
 
 Commit changes to the `Dockerfile`:
 
-`git add Dockerfile`
-`git commit -m "..."`
+```
+git add Dockerfile
+git commit -m "..."
+```
 
 Tag the Git commit:
 
-`git tag <tag>`
+```
+git tag <tag>
+```
 
 Push the Git commit to GitHub, then push the Git tag to GitHub to trigger the GitHub workflow:
 
-`git push origin`
-`git push origin <tag>`
+```
+git push origin
+git push origin <tag>
+```
 
-## How to: replace a Docker image
+## How to: republish a Docker image
 
 Delete the Git tag locally and on GitHub:
 
-`git tag --delete <tag>`
-`git push origin --delete <tag>`
+```
+git tag --delete <tag>
+git push origin --delete <tag>
+```
 
 Now tag another Git commit and push the Git commit and Git tag to GitHub to trigger the GitHub 
 workflow. The Docker image on Docker Hub will be replaced.
