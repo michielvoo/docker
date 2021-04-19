@@ -35,7 +35,7 @@ Push the Git commit to GitHub, then push the Git tag to GitHub to trigger the Gi
 Delete the Git tag locally and on GitHub:
 
 `git tag --delete <tag>`
-`git push --delete origin <tag>`
+`git push origin --delete <tag>`
 
 Now tag another Git commit and push the Git commit and Git tag to GitHub to trigger the GitHub 
 workflow. The Docker image on Docker Hub will be replaced.
