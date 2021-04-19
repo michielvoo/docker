@@ -23,6 +23,13 @@ git add Dockerfile
 git commit -m "..."
 ```
 
+Remove the last locally built Docker image (optional) and rebuild the local Docker image:
+
+```
+docker image rm $(basename $PWD)
+docker build . -t $(basename $PWD)
+```
+
 Tag the Git commit:
 
 ```
