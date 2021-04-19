@@ -6,7 +6,8 @@ Hugo Extended and Git on Alpine Linux, for building static websites
 
 Find the current versions of Hugo and Git for the current stable version of 
 Alpine Linux [here](https://pkgs.alpinelinux.org/packages) (new versions of 
-Alpine Linux are made available in May and November), and update the Dockerfile.
+Alpine Linux are made available in May and November), and update the Dockerfile 
+accordingly.
 
 After building the local Docker image run it to check the Hugo version:
 
