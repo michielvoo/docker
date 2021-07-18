@@ -17,7 +17,7 @@ Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the
 After building the local Docker image run it to check the PowerShell version:
 
 ```
-docker run --rm -it --entrypoint pwsh aws -Version
+docker run --rm -it aws -Version
 ```
 
 ## How to: update AWS Tools for PowerShell
@@ -32,5 +32,5 @@ Run the local Docker image to execute the `test.ps1` script, while making sure
 the required environment variables are set correctly:
 
 ```
-docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_SECRET_KEY --env AWS_REGION --env --entrypoint pwsh aws -File test.ps1
+docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File test.ps1
 ```

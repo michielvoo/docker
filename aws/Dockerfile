@@ -13,4 +13,4 @@ RUN pwsh -Command "Install-AWSToolsModule -Confirm:\$False -Scope AllUsers -Name
 
 WORKDIR /src
 
-CMD ["pswh"]
+ENTRYPOINT ["pwsh"]
