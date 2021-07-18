@@ -21,18 +21,18 @@ Docker tag to the Docker image before it is pushed.
 
 ## How to: update a Docker image
 
+To test the changes, remove the last locally built Docker image and rebuild the local Docker image:
+
+```
+docker image rm $(basename $PWD)
+docker build . --tag $(basename $PWD)
+```
+
 Commit changes to the `Dockerfile`:
 
 ```
 git add Dockerfile
 git commit --message "..."
-```
-
-Remove the last locally built Docker image (optional) and rebuild the local Docker image:
-
-```
-docker image rm $(basename $PWD)
-docker build . --tag $(basename $PWD)
 ```
 
 Tag the Git commit:

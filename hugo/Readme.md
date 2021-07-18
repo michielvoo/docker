@@ -15,6 +15,8 @@ After building the local Docker image run it to check the Hugo version:
 docker run --rm -it hugo version
 ```
 
+ ## How to: test Hugo
+
 Change to a directory that contains a Hugo website, and run the local image to 
 start the Hugo server:
 
