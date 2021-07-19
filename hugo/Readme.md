@@ -16,15 +16,15 @@ docker run --rm -v $PWD:/root/work hugo
 
 ## Contributing
 
-### How to: update Hugo
+### How to: update Hugo and Git
 
-Find the current versions of Hugo and Git for the current stable version of 
-Alpine Linux [here](https://pkgs.alpinelinux.org/packages) (new versions of 
-Alpine Linux are made available in May and November), and update the Dockerfile 
-accordingly.
+Find the current versions of Hugo and Git for the base image's Apline Linux 
+version [here](https://pkgs.alpinelinux.org/packages) and update the 
+corresponding `apk add` commands in the Dockerfile accordingly.
 
-After building the local Docker image run it to check the Hugo version:
+After building the local Docker image run it to check the Git and Hugo versions:
 
 ```
+docker run --rm -it --entrypoint git hugo --version
 docker run --rm -it hugo version
 ```
