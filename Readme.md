@@ -18,13 +18,15 @@ Docker tag to the Docker image before it is pushed.
 [workflow]: https://github.com/michielvoo/Docker/actions/workflows/default.yml
 [hub]: https://hub.docker.com
 
-## Docker images
+Docker images maintained in this repository:
 
 - [aws](aws) - AWS Tools for PowerShell on Alpine Linux, for provisioning AWS resources
 - [az](az) - Azure PowerShell on Alpine Linux, for provisioning Azure resources
 - [hugo](hugo) - Hugo Extended and Git on Alpine Linux, for building static websites
 
-## How to: update a Docker image
+## Contributing
+
+### How to: update a Docker image
 
 To test the changes, remove the last locally built Docker image and rebuild the local Docker image:
 
@@ -53,7 +55,7 @@ git push origin
 git push origin <tag>
 ```
 
-## How to: republish a Docker image
+### How to: republish a Docker image
 
 Delete the Git tag locally and on GitHub:
 
