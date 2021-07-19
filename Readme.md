@@ -28,7 +28,8 @@ Docker images maintained in this repository:
 
 ### How to: update a Docker image
 
-To test the changes, remove the last locally built Docker image and rebuild the local Docker image:
+To test the changes made to a Dockerfile, remove the last locally built Docker 
+image and rebuild the local Docker image:
 
 ```
 docker image rm $(basename $PWD)
