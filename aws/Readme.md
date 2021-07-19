@@ -14,11 +14,12 @@ used for authentication, which requires the access key and secret key of an
 authorized IAM user. The [`Set-DefaultAWSRegion`][region] cmdlet can be used to 
 set a default region for all commands.
 
-An example is given in [`test.ps1`], which uses the environment variables shown 
-in the command below to authenticate and to set a default region.
+An example is given in [`example.ps1`](example.ps1), which uses the environment 
+variables shown in the command below to authenticate and to set a default 
+region.
 
 ```
-docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File test.ps1
+docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File example.ps1
 ```
 
 [credentials]: https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html
