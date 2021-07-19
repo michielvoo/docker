@@ -17,6 +17,7 @@ Docker tag to the Docker image before it is pushed.
 ## Docker images
 
 - [aws](aws) - AWS Tools for PowerShell on Alpine Linux, for provisioning AWS resources
+- [az](az) - Azure PowerShell on Alpine Linux, for provisioning Azure resources
 - [hugo](hugo) - Hugo Extended and Git on Alpine Linux, for building static websites
 
 ## How to: update a Docker image
