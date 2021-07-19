@@ -1,6 +1,6 @@
 # Azure PowerShell
 
-Azure PowerShell on Alpine Linux, for provisioning Azure resources
+Azure PowerShell and Git on Alpine Linux, for provisioning Azure resources
 
 The following PowerShell modules are installed:
 
@@ -25,16 +25,22 @@ docker run --rm -it -v $PWD:/root/work --env AZ_CLIENT_ID --env AZ_CLIENT_wECRET
 
 ## Contributing
 
-### How to: update PowerShell
+### How to: update PowerShell and Git
 
 Find the Docker tag corresponding to a newer version of PowerShell on Alpine 
 Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the 
 `FROM` statement in the Dockerfile accordingly.
 
-After building the local Docker image run it to check the PowerShell version:
+Find the current version of Git for the version of Alpine Linux used by the 
+base image [here](https://pkgs.alpinelinux.org/packages), and update the 
+corresponding `apk add` command in the Dockerfile accordingly.
+
+After building the local Docker image run it to check the PowerShell and Git 
+versions:
 
 ```
 docker run --rm -it az -Version
+docker run --rm -it --entrypoint git az --version
 ```
 
 ### How to: update Azure PowerShell
@@ -44,7 +50,8 @@ module and check its dependencies for updates of the PowerShell modules that
 are installed and update the `-RequiredVersion` argument in the corresponding 
 `Install-Module` commands in the Dockerfile accordingly.
 
-### How to: test Azure PowerShell
+After building the local Docker image run it to check the Azure PowerShell 
+module works:
 
 ```
 docker run --rm -it az -Command Get-AzEnvironment

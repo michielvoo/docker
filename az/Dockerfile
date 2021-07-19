@@ -1,9 +1,11 @@
 FROM mcr.microsoft.com/powershell:7.1.3-alpine-3.12-20210603
 
-LABEL org.opencontainers.image.title="Azure PowerShell on Alpine Linux"
-LABEL org.opencontainers.image.description="Azure PowerShell on Alpine Linux, for provisioning Azure resources"
+LABEL org.opencontainers.image.title="Azure"
+LABEL org.opencontainers.image.description="Azure PowerShell and Git on Alpine Linux, for provisioning Azure resources"
 
-RUN pwsh -Command "Set-PSRepository -Name PSGallery -InstallationPolicy 'Trusted'" \
+RUN apk update --no-cache \
+    && apk add git=2.26.3-r0 --no-cache \
+    && pwsh -Command "Set-PSRepository -Name PSGallery -InstallationPolicy 'Trusted'" \
     && pwsh -Command "Install-Module -Confirm:\$False -Scope AllUsers -Name Az.Accounts -RequiredVersion 2.5.1" \
     && pwsh -Command "Install-Module -Confirm:\$False -Scope AllUsers -Name Az.Functions -RequiredVersion 3.1.0" \
     && pwsh -Command "Install-Module -Confirm:\$False -Scope AllUsers -Name Az.Resources -RequiredVersion 4.2.0" \
