@@ -18,7 +18,6 @@ After building the local Docker image run it to check the PowerShell version:
 
 ```
 docker run --rm -it aws -Version
-docker run --rm -it aws -Command Get-AWSPowerShellVersion
 ```
 
 ## How to: update AWS Tools for PowerShell

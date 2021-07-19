@@ -19,7 +19,6 @@ After building the local Docker image run it to check the PowerShell version:
 
 ```
 docker run --rm -it az -Version
-docker run --rm -it az -Command Get-AzEnvironment
 ```
 
 ## How to: update Azure PowerShell
