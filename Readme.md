@@ -59,15 +59,16 @@ git push origin <tag>
 
 ### How to: republish a Docker image
 
-Delete the Git tag locally and on GitHub:
+After committing a non-breaking change to a Dockerfile, delete the original Git 
+tag locally and on GitHub:
 
 ```
 git tag --delete <tag>
 git push origin --delete <tag>
 ```
 
-Now tag the Git commit and push the Git commit and Git tag to GitHub to trigger the GitHub 
-workflow.
+Now tag the Git commit and push the Git commit and Git tag to GitHub to trigger 
+the GitHub workflow.
 
 ```
 git tag <tag>
