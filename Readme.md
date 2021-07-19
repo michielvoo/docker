@@ -2,7 +2,7 @@
 
 Bespoke Docker images
 
-![default workflow][workflow]
+[![default workflow][badge]][workflow]
 
 This Git repository contains definitions for Docker images, as well as a GitHub workflow that 
 builds the Docker images and pushes them to the Docker registry on [Docker Hub][hub] that 
@@ -14,6 +14,7 @@ first segment should match both a top-level directory in this Git repository tha
 second segment of the Git tag indicates the version of the Docker image, and will be applied as a 
 Docker tag to the Docker image before it is pushed.
 
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/default.yml/badge.svg
 [workflow]: https://github.com/michielvoo/Docker/actions/workflows/default.yml
 [hub]: https://hub.docker.com
 
