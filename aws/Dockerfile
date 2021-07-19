@@ -12,6 +12,6 @@ RUN pwsh -Command "Set-PSRepository -Name PSGallery -InstallationPolicy 'Trusted
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFront' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile"
 
-WORKDIR /src
+WORKDIR /root/work
 
 ENTRYPOINT ["pwsh"]

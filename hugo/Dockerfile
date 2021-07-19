@@ -9,6 +9,6 @@ RUN apk update --no-cache \
 
 EXPOSE 1313
 
-WORKDIR /src
+WORKDIR /root/work
 
 ENTRYPOINT ["hugo"]

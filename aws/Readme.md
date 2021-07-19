@@ -19,7 +19,7 @@ variables shown in the command below to authenticate and to set a default
 region.
 
 ```
-docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File example.ps1
+docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File example.ps1
 ```
 
 [credentials]: https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html

@@ -16,7 +16,7 @@ an authorized service principal. An example is given in [`example.ps1`](example.
 which uses the environment variables shown in the command below to authenticate.
 
 ```
-docker run --rm -it -v $PWD:/src --env AZ_CLIENT_ID --env AZ_CLIENT_SECRET --env AZ_TENANT_ID az -File example.ps1
+docker run --rm -it -v $PWD:/root/work --env AZ_CLIENT_ID --env AZ_CLIENT_SECRET --env AZ_TENANT_ID az -File example.ps1
 ```
 
 [credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
