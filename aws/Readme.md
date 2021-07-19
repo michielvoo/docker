@@ -22,6 +22,8 @@ region.
 docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File example.ps1
 ```
 
+(This command uses a 'local' build of the Docker image named `aws`.)
+
 [credentials]: https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html
 [region]: https://docs.aws.amazon.com/powershell/latest/userguide/pstools-installing-specifying-region.html
 

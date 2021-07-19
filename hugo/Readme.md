@@ -2,6 +2,18 @@
 
 Hugo Extended and Git on Alpine Linux, for building static websites
 
+This Docker image supports development and automated building of static 
+websites. Change to a directory that contains the source for a Hugo website, 
+and run the image to start the Hugo server at <http://localhost:1313> or to 
+build the website:
+
+```
+docker run --rm -it -v $PWD:/root/work -p 1313:1313 hugo server --bind=0.0.0.0
+docker run --rm -v $PWD:/root/work hugo
+```
+
+(These commands use a 'local' build of the Docker image named `hugo`.)
+
 ## Contributing
 
 ### How to: update Hugo
@@ -16,14 +28,3 @@ After building the local Docker image run it to check the Hugo version:
 ```
 docker run --rm -it hugo version
 ```
-
- ### How to: test Hugo
-
-Change to a directory that contains a Hugo website, and run the local image to 
-start the Hugo server:
-
-```
-docker run --rm -it -v $PWD:/root/work -p 1313:1313 hugo server --bind=0.0.0.0
-```
-
-Browse to <http://localhost:1313> to test the website.
