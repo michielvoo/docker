@@ -43,7 +43,8 @@ git add Dockerfile
 git commit --message "..."
 ```
 
-Tag the Git commit using the `<image>/<version>` format:
+Tag the Git commit using the `<image>/<version>` format described earlier in 
+this readme:
 
 ```
 git tag <tag>
