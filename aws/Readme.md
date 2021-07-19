@@ -8,7 +8,25 @@ The following PowerShell modules are installed:
 - [AWS.Tools.CloudFront](https://www.powershellgallery.com/packages/AWS.Tools.CloudFront)
 - [AWS.Tools.Installer](https://www.powershellgallery.com/packages/AWS.Tools.Installer)
 
-## How to: update PowerShell
+This Docker image supports automated resource provisioning and application 
+deployment to AWS. The [`Set-AWSCredential`][credentials] cmdlet is 
+used for authentication, which requires the access key and secret key of an 
+authorized IAM user. The [`Set-DefaultAWSRegion`][region] cmdlet can be used to 
+set a default region for all commands.
+
+An example is given in [`test.ps1`], which uses the environment variables shown 
+in the command below to authenticate and to set a default region.
+
+```
+docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File test.ps1
+```
+
+[credentials]: https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html
+[region]: https://docs.aws.amazon.com/powershell/latest/userguide/pstools-installing-specifying-region.html
+
+## Contributing
+
+### How to: update PowerShell
 
 Find the Docker tag corresponding to a newer version of PowerShell on Alpine 
 Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the 
@@ -20,17 +38,14 @@ After building the local Docker image run it to check the PowerShell version:
 docker run --rm -it aws -Version
 ```
 
-## How to: update AWS Tools for PowerShell
+### How to: update AWS Tools for PowerShell
 
-Find the latest version of the PowerShell that are installed and update the 
- `-RequiredVersion` argument in the corresponding commands in the Dockerfile 
- accordingly.
+Find the latest version of the PowerShell modules that are installed and update 
+the `-RequiredVersion` argument in the corresponding `Install-Module` commands 
+in the Dockerfile accordingly.
 
-## How to: test AWS Tools for PowerShell
-
-Run the local Docker image to execute the `test.ps1` script, while making sure 
-the required environment variables are set correctly:
+### How to: test AWS Tools for PowerShell
 
 ```
-docker run --rm -it -v $PWD:/src --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File test.ps1
+docker run --rm -it aws -Command Get-AWSPowerShellVersion
 ```

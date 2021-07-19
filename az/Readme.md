@@ -9,7 +9,21 @@ The following PowerShell modules are installed:
 - [Az.Resources](https://www.powershellgallery.com/packages/Az.Resources)
 - [Az.Storage](https://www.powershellgallery.com/packages/Az.Storage)
 
-## How to: update PowerShell
+This Docker image supports automated resource provisioning and application 
+deployment to Azure. The [`Connect-AzAccount`][credentials] cmdlet is 
+used for authentication, which requires the tentant ID and the credentials of 
+an authorized service principal. An example is given in [`test.ps1`], which 
+uses the environment variables shown in the command below to authenticate.
+
+```
+docker run --rm -it -v $PWD:/src --env AZ_CLIENT_ID --env AZ_CLIENT_SECRET --env AZ_TENANT_ID az -File test.ps1
+```
+
+[credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
+
+## Contributing
+
+### How to: update PowerShell
 
 Find the Docker tag corresponding to a newer version of PowerShell on Alpine 
 Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the 
@@ -21,17 +35,15 @@ After building the local Docker image run it to check the PowerShell version:
 docker run --rm -it az -Version
 ```
 
-## How to: update Azure PowerShell
+### How to: update Azure PowerShell
 
-Find the latest version of the PowerShell that are installed and update the 
- `-RequiredVersion` argument in the corresponding commands in the Dockerfile 
- accordingly.
+Check the latest version of the [`Az`](https://www.powershellgallery.com/packages/Az) 
+module and check its dependencies for updates of the PowerShell modules that 
+are installed and update the `-RequiredVersion` argument in the corresponding 
+`Install-Module` commands in the Dockerfile accordingly.
 
-## How to: test Azure PowerShell
-
-Run the local Docker image to execute the `test.ps1` script, while making sure 
-the required environment variables are set correctly:
+### How to: test Azure PowerShell
 
 ```
-docker run --rm -it -v $PWD:/src --env AZ_CLIENT_ID --env AZ_CLIENT_SECRET --env AZ_TENANT_ID az -File test.ps1
+docker run --rm -it az -Command Get-AzEnvironment
 ```
