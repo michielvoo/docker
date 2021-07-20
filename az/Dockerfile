@@ -14,7 +14,10 @@ RUN apk update --no-cache \
     && pwsh -Command "Write-Output 'Import-Module Az.Accounts' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Functions' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Resources' | Out-File -Append -FilePath \$Profile" \
-    && pwsh -Command "Write-Output 'Import-Module Az.Storage' | Out-File -Append -FilePath \$Profile"
+    && pwsh -Command "Write-Output 'Import-Module Az.Storage' | Out-File -Append -FilePath \$Profile" \
+    && pwsh -Command "Disable-AzDataCollection"
+
+ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
 WORKDIR /root/work
 

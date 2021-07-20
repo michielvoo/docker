@@ -14,6 +14,8 @@ RUN apk update --no-cache \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFront' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile"
 
+ENV POWERSHELL_TELEMETRY_OPTOUT=1
+
 WORKDIR /root/work
 
 ENTRYPOINT ["pwsh"]
