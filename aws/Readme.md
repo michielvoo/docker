@@ -44,7 +44,7 @@ versions:
 
 ```
 docker run --rm -it aws -Version
-docker run --rm -it --entrypoint git aws --version
+docker run --rm -it aws -Command "git --version"
 ```
 
 
@@ -58,5 +58,5 @@ After building the local Docker image run it to check the AWS Tools for
 PowerShell version:
 
 ```
-docker run --rm -it aws -Command Get-AWSPowerShellVersion
+docker run --rm -it aws -Command "Get-AWSPowerShellVersion"
 ```

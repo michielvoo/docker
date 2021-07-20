@@ -40,7 +40,7 @@ versions:
 
 ```
 docker run --rm -it az -Version
-docker run --rm -it --entrypoint git az --version
+docker run --rm -it az -Command "git --version"
 ```
 
 ### How to: update Azure PowerShell
@@ -54,5 +54,5 @@ After building the local Docker image run it to check the Azure PowerShell
 module works:
 
 ```
-docker run --rm -it az -Command Get-AzEnvironment
+docker run --rm -it az -Command "Get-AzEnvironment"
 ```
