@@ -12,7 +12,10 @@ RUN apk update --no-cache \
     && pwsh -Command "New-Item -Force -ItemType File -Path \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFormation' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFront' | Out-File -Append -FilePath \$Profile" \
-    && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile"
+    && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile" \
+    && mkdir -pv /usr/local/share/powershell/Modules/AWSExtensions
+
+COPY AWSExtensions.psm1 /usr/local/share/powershell/Modules/AWSExtensions
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
