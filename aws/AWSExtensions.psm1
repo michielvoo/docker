@@ -43,8 +43,7 @@ Function Deploy-CFNStack
     .DESCRIPTION
         If the CloudFormation stack specified in StackName does not exist it is 
         created, otherwise it is updated. Parameters passed to this cmdlet via 
-        the Parameters parameter will be passed on to the New-CFNStack or 
-        Update-CFNStack cmdlets.
+        will be passed on to the New-CFNStack or Update-CFNStack cmdlets.
 
     .PARAMETER StackName
         The name that is associated with the stack.
