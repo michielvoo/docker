@@ -42,43 +42,61 @@ Function Deploy-CFNStack
 
     .DESCRIPTION
         If the CloudFormation stack specified in StackName does not exist it is 
-        created, otherwise it is updated. Parameters passed to this cmdlet will 
-        be passed on to the New-CFNStack or Update-CFNStack cmdlets.
+        created, otherwise it is updated. Parameters passed to this cmdlet via 
+        the Parameters parameter will be passed on to the New-CFNStack or 
+        Update-CFNStack cmdlets.
 
     .PARAMETER StackName
         The name that is associated with the stack.
 
+    .PARAMETER Timeout
+        The amount of time in seconds to wait for deployment to complete.
+
+    .PARAMETER Remaining
+        All remaining command line parameters will be associated with this 
+        parameter and will be passed on to the New-CFNStack or Update-CFNStack 
+        cmdlet.
+
     .EXAMPLE
-        Deploy-CFNStack -StackName "myStack" `
-            -TemplateBody "{TEMPLATE CONTENT HERE}" `
-            -Parameter @(
-                @{ ParameterKey="PK1"; ParameterValue="PV1" },
-                @{ ParameterKey="PK2"; ParameterValue="PV2" }
-            )
+        Deploy-CFNStack `
+            -StackName "..." `
+            -TemplateBody "..." `
+            -Parameter @()
     #>
 
     Param(
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string] $StackName
+        [Parameter(Mandatory)]
+        [string] $StackName,
+
+        [int] $Timeout = 900,
+
+        [Parameter(ValueFromRemainingArguments)]
+        [object[]] $Remaining
     )
 
     Process
     {
-        $Verb = "Update"
+        $Parameters = @{}
+        For ($i = 0; $i -lt $Remaining.Count; $i += 2)
+        {
+            $Name = $Remaining[$i]
+            $Value = $Remaining[$i + 1]
+
+            $Parameters.Add($Name, $Value)
+        } 
+
+        Write-Host "Deploying stack $StackName..."
 
         Try
         {
             $Stack = Get-CFNStack -StackName $StackName
-
-            Write-Host "Updating existing stack"
+            Update-CFNStack -StackName $StackName @Parameters
         }
-        Catch [Amazon.CloudFormation.AmazonCloudFormationException]
+        Catch
         {
             If ($_.Exception.Message -eq "Stack with id $StackName does not exist")
             {
-                $Verb = "New"
-
-                Write-Host "Creating new stack"
+                New-CFNStack -StackName $StackName @Parameters
             }
             Else
             {
@@ -86,7 +104,8 @@ Function Deploy-CFNStack
             }
         }
 
-        $Expression = $Verb + "-CFNStack -StackName " + $StackName + " " + $MyInvocation.UnboundArguments -join " "
-        Write-Host $Expression
+        Wait-CFNStack -StackName $StackName -Timeout $Timeout
+
+        Write-Host "Deployed stack $StackName"
     }
 }
