@@ -15,7 +15,10 @@ RUN apk update --no-cache \
     && pwsh -Command "Write-Output 'Import-Module Az.Functions' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Resources' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Storage' | Out-File -Append -FilePath \$Profile" \
-    && pwsh -Command "Disable-AzDataCollection"
+    && pwsh -Command "Disable-AzDataCollection" \
+    && mkdir -pv /usr/local/share/powershell/Modules/AzCmdlets
+
+COPY AzCmdlets.psm1 /usr/local/share/powershell/Modules/AzCmdlets
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
