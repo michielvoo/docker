@@ -21,4 +21,4 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
 WORKDIR /root/work
 
-ENTRYPOINT ["pwsh"]
+ENTRYPOINT ["pwsh", "-NoLogo"]

@@ -1,36 +1,58 @@
-Function Get-AWSParameters
+Function ConvertTo-CFNParameters
 {
     <#
     .SYNOPSIS
-        Convert JSON content to an array of AWS parameters.
+        Convert JSON content to an array of AWS CloudFormation parameters.
 
     .DESCRIPTION
-        The JSON file should contain an array of objects, each object should 
+        The JSON content should contain an array of objects, each object should 
         have a ParameterKey and ParameterValue property. This cmdlet returns an 
         array of object of type Amazon.CloudFormation.Model.Parameter.
 
-    .PARAMETER Path
-        Specifies the path to an item where Get-AWSParameters gets the JSON 
-        content. Wildcard characters are permitted. The paths must be paths to 
-        items, not to containers. For example, you must specify a path to one 
-        or more files, not a path to a directory.
+    .PARAMETER Json
+        Specifies the JSON content.
     #>
 
     Param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string] $Path
+        [string] $Json
     )
 
     Process
     {
-        Return Get-Content -Path $Path -Raw |
-            ConvertFrom-Json |
-            ForEach-Object -Process {
-                New-Object Amazon.CloudFormation.Model.Parameter -Property @{
-                    ParameterKey = $_.ParameterKey
-                    ParameterValue = $_.ParameterValue
-                }
+        Return ConvertFrom-Json $Json | ForEach-Object {
+            New-Object Amazon.CloudFormation.Model.Parameter -Property @{
+                ParameterKey = $_.ParameterKey
+                ParameterValue = $_.ParameterValue
             }
+        }
+    }
+}
+
+Function ConvertTo-CFNTags
+{
+    <#
+    .SYNOPSIS
+        Convert a hashtable to an array of AWS CloudFormation tags.
+
+    .PARAMETER Tags
+        The hashtable to convert.
+    #>
+
+    param
+    (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [hashtable] $Tags
+    )
+
+    Process
+    {
+        Return $Tags.GetEnumerator() | ForEach-Object {
+            New-Object Amazon.CloudFormation.Model.Tag -Property @{
+                Key = $_.Name
+                Value = $_.Value.ToString()
+            }
+        }
     }
 }
 
@@ -78,15 +100,6 @@ Function Deploy-CFNStack
 
     Process
     {
-        $Parameters = @{}
-        For ($i = 0; $i -lt $Remaining.Count; $i += 2)
-        {
-            $Name = $Remaining[$i]
-            $Value = $Remaining[$i + 1]
-
-            $Parameters.Add($Name, $Value)
-        } 
-
         $ChangeSetType = "UPDATE"
 
         Try
@@ -112,6 +125,15 @@ Function Deploy-CFNStack
             }
         }
 
+        $Parameters = @{}
+        For ($i = 0; $i -lt $Remaining.Count; $i += 2)
+        {
+            $Name = $Remaining[$i]
+            $Value = $Remaining[$i + 1]
+
+            $Parameters.Add($Name, $Value)
+        }
+
         $ChangeSet = New-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -ChangeSetType $ChangeSetType @Parameters
 
         Do
@@ -124,11 +146,12 @@ Function Deploy-CFNStack
         If ($ChangeSet.Status -eq "FAILED")
         {
             Write-Host "Skipped deployment of stack $StackName." $ChangeSet.StatusReason
-
-            Return
         }
-
-        If ($ChangeSet.ExecutionStatus -eq "AVAILABLE")
+        ElseIf ($ChangeSet.ExecutionStatus -ne "AVAILABLE")
+        {
+            Write-Host "Unable to execute change set $ChangeSet."
+        }
+        Else
         {
             Write-Host "Executing change set $ChangeSetName..."
 
@@ -137,9 +160,7 @@ Function Deploy-CFNStack
 
             Write-Host "Deployed stack $StackName."
         }
-        Else
-        {
-            Write-Host "Unable to execute change set $ChangeSet."
-        }
+
+        Return $Stack
     }
 }
