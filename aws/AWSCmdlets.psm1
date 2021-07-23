@@ -11,6 +11,9 @@ Function ConvertTo-CFNParameters
 
     .PARAMETER Json
         Specifies the JSON content.
+
+    .EXAMPLE
+        ConvertTo-CFNParameters -Json (Get-Content -Path "aws/infrastructure.prd.json" -Raw)
     #>
 
     Param(
@@ -37,6 +40,9 @@ Function ConvertTo-CFNTags
 
     .PARAMETER Tags
         The hashtable to convert.
+
+    .EXAMPLE
+        ConvertTo-CFNTags -Tags @{ "environment" = "prd" }
     #>
 
     param
