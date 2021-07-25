@@ -7,7 +7,8 @@ The following PowerShell modules are installed:
 - [AWS.Tools.CloudFormation](https://www.powershellgallery.com/packages/AWS.Tools.CloudFormation)
 - [AWS.Tools.CloudFront](https://www.powershellgallery.com/packages/AWS.Tools.CloudFront)
 - [AWS.Tools.Installer](https://www.powershellgallery.com/packages/AWS.Tools.Installer)
-- [AWSCmdlets](AWSCmdlets.psm1)
+- [AwsCmdlets](AwsCmdlets)
+- [CidCmdlets](CidCmdlets)
 
 This Docker image supports automated resource provisioning and application 
 deployment to AWS. The [`Set-AWSCredential`][credentials] cmdlet is 

@@ -15,10 +15,15 @@ RUN apk update --no-cache \
     && pwsh -Command "Write-Output 'Import-Module Az.Functions' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Resources' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module Az.Storage' | Out-File -Append -FilePath \$Profile" \
-    && pwsh -Command "Disable-AzDataCollection" \
-    && mkdir -pv /usr/local/share/powershell/Modules/AzCmdlets
+    && pwsh -Command "Disable-AzDataCollection"
 
-COPY AzCmdlets.psm1 /usr/local/share/powershell/Modules/AzCmdlets
+RUN mkdir -pv /usr/local/share/powershell/Modules/AzCmdlets
+COPY AzCmdlets/* /usr/local/share/powershell/Modules/AzCmdlets
+RUN pwsh -Command "Test-ModuleManifest -Path /usr/local/share/powershell/Modules/AzCmdlets/AzCmdlets.psd1"
+
+RUN mkdir -pv /usr/local/share/powershell/Modules/CidCmdlets
+COPY CidCmdlets/* /usr/local/share/powershell/Modules/CidCmdlets
+RUN pwsh -Command "Test-ModuleManifest -Path /usr/local/share/powershell/Modules/CidCmdlets/CidCmdlets.psd1"
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 

@@ -12,10 +12,15 @@ RUN apk update --no-cache \
     && pwsh -Command "New-Item -Force -ItemType File -Path \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFormation' | Out-File -Append -FilePath \$Profile" \
     && pwsh -Command "Write-Output 'Import-Module AWS.Tools.CloudFront' | Out-File -Append -FilePath \$Profile" \
-    && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile" \
-    && mkdir -pv /usr/local/share/powershell/Modules/AWSCmdlets
+    && pwsh -Command "Write-Output 'Import-Module AWS.Tools.Installer' | Out-File -Append -FilePath \$Profile"
 
-COPY AWSCmdlets.psm1 /usr/local/share/powershell/Modules/AWSCmdlets
+RUN mkdir -pv /usr/local/share/powershell/Modules/AwsCmdlets
+COPY AwsCmdlets/* /usr/local/share/powershell/Modules/AwsCmdlets
+RUN pwsh -Command "Test-ModuleManifest -Path /usr/local/share/powershell/Modules/AwsCmdlets/AwsCmdlets.psd1"
+
+RUN mkdir -pv /usr/local/share/powershell/Modules/CidCmdlets
+COPY CidCmdlets/* /usr/local/share/powershell/Modules/CidCmdlets
+RUN pwsh -Command "Test-ModuleManifest -Path /usr/local/share/powershell/Modules/CidCmdlets/CidCmdlets.psd1"
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 

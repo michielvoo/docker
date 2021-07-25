@@ -8,7 +8,8 @@ The following PowerShell modules are installed:
 - [Az.Functions](https://www.powershellgallery.com/packages/Az.Functions)
 - [Az.Resources](https://www.powershellgallery.com/packages/Az.Resources)
 - [Az.Storage](https://www.powershellgallery.com/packages/Az.Storage)
-- [AzCmdlets](AzCmdlets.psm1)
+- [AzCmdlets](AzCmdlets)
+- [CidCmdlets](CidCmdlets)
 
 This Docker image supports automated resource provisioning and application 
 deployment to Azure. The [`Connect-AzAccount`][credentials] cmdlet is 
