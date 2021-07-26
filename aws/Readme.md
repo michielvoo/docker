@@ -31,6 +31,15 @@ docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --e
 
 ## Contributing
 
+### How to: Run automated tests
+
+```
+docker run --rm -it -v $PWD:/root/work pester
+```
+
+(This command uses a 'local' build of the Docker image named `pester`.)
+
+
 ### How to: update PowerShell and Git
 
 Find the Docker tag corresponding to a newer version of PowerShell on Alpine 
