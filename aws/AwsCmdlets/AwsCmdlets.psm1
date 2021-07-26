@@ -1,1 +1,1 @@
-. "$PSScriptRoot/CloudFormation.ps1"
+. $PSScriptRoot/CloudFormation.ps1

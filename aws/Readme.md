@@ -49,7 +49,6 @@ docker run --rm -it aws -Version
 docker run --rm -it aws -Command "git --version"
 ```
 
-
 ### How to: update AWS Tools for PowerShell
 
 Find the latest version of the PowerShell modules that are installed and update 

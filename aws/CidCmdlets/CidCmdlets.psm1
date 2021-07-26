@@ -49,4 +49,4 @@ Set-Variable -Name "Cid" -Value (Get-CidConstants)
 
 Export-ModuleMember -Variable "Cid"
 
-. "$PSScriptRoot/Logging.ps1"
+. $PSScriptRoot/Logging.ps1
