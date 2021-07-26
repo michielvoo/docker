@@ -21,7 +21,9 @@ RUN apk update --no-cache \
     && New-Item -Force -ItemType File -Path $Profile \
     && Write-Output "Import-Module AWS.Tools.CloudFormation" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AWS.Tools.CloudFront" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module AWS.Tools.Installer" | Out-File -Append -FilePath $Profile
+    && Write-Output "Import-Module AWS.Tools.Installer" | Out-File -Append -FilePath $Profile \
+    && Write-Output "Import-Module AwsCmdlets" | Out-File -Append -FilePath $Profile \
+    && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile
 
 WORKDIR /root/work
 
