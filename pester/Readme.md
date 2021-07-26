@@ -6,10 +6,11 @@ The following PowerShell modules are installed:
 
 - [Pester](https://www.powershellgallery.com/packages/Pester)
 
-This Docker image supports execution of Pester unit tests. A directory 
-containing PowerShell scripts and their accompanying tests should be mounted in 
-the working directory of the Docker container. The container executes the 
-`Invoke-Pester` cmdlet by default, which will automatically discover the tests.
+This Docker image supports execution of Pester tests. A directory containing 
+PowerShell scripts and their accompanying tests should be mounted in the 
+working directory of the Docker container. The container executes the 
+`Invoke-Pester` cmdlet and passes all arguments to it. Tests will automatically 
+be discovered, and arguments such as `-Tag` can be used to filter the tests.
 
 ```
 docker run --rm -it -v $PWD:/root/work pester -Tag unit
@@ -28,7 +29,7 @@ Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the
 After building the local Docker image run it to check the PowerShell version:
 
 ```
-docker run --rm -it pester -Version
+docker run --rm -it --entrypoint pwsh pester -Version
 ```
 
 ### How to: update Pester

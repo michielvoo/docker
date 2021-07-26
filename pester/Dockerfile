@@ -12,9 +12,9 @@ RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
     && New-Item -Force -ItemType File -Path $Profile \
     && Write-Output "Import-Module Pester" | Out-File -Append -FilePath $Profile
 
-COPY docker-entrypoint.sh /usr/bin
-RUN chmod +x /usr/bin/docker-entrypoint.sh
+COPY docker-entrypoint.ps1 /usr/bin
+RUN chmod +x /usr/bin/docker-entrypoint.ps1
 
 WORKDIR /root/work
 
-ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/docker-entrypoint.ps1"]
