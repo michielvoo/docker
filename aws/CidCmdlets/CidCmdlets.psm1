@@ -1,6 +1,4 @@
-$IsGH = Test-Path -Path "Env:GITHUB_ACTION"
-$IsTC = Test-Path -Path "Env:TEAMCITY_VERSION"
-$IsTF = Test-Path -Path "Env:TF_BUILD"
+. $PSScriptRoot/Environment.ps1
 
 Function Get-CidConstants
 {
@@ -16,14 +14,12 @@ Function Get-CidConstants
     }
 
     $Runner = @{
-        ArtifactsPath = $IsTF ? $Env:BUILD_BINARIESDIRECTORY : $Null
-        Run = $IsTF ? $Env:BUILD_BUILDID : $null
+        ArtifactsPath = IsTF ? $Env:BUILD_BINARIESDIRECTORY : $Null
+        Run = IsTF ? $Env:BUILD_BUILDID : $null
     }
 
-    git rev-parse *> Out-Null
-    $IsGit = -not $LastExitCode
-    $Commit = $IsGit ? (git rev-parse HEAD) : "unknown"
-    $GitRepositoryName = $IsGit ? (Split-Path -Path ((git config --get remote.origin.url) -replace "\.git$","") -Leaf) : "unknown"
+    $Commit = IsGit ? (git rev-parse HEAD) : "unknown"
+    $GitRepositoryName = IsGit ? (Split-Path -Path ((git config --get remote.origin.url) -replace "\.git$","") -Leaf) : "unknown"
 
     $Name = (($Result.Name ?? $GitRepositoryName) -replace "[^\d\w.]", "-") -replace "-+", "-"
     $Timestamp = Get-Date -AsUTC -Format FileDateTimeUniversal
@@ -35,7 +31,7 @@ Function Get-CidConstants
         Environment = "dev"
         Name = $Name
         Run = $Timestamp
-        Trigger = ($IsGH || $IsTC || $IsTF) ? "auto" : "manual"
+        Trigger = (IsGH || IsTC || IsTF) ? "auto" : "manual"
     }
 
     $Defaults.Keys | Sort-Object | ForEach-Object {

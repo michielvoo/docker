@@ -1,3 +1,5 @@
+. $PSScriptRoot/Environment.ps1
+
 Function Use-CidLogGroup
 {
     Param(
@@ -16,11 +18,11 @@ Function Use-CidLogGroup
     {
         Try
         {
-            Write-Host (($IsGH ? "::group::{{{0}}}" : $IsTC ? "##teamcity[blockOpened name='{0}' description='']" : $IsTF ? "##[group]{0}" : ">>> {0}") -f $Message)
+            Write-Host (((IsGH) ? "::group::{{{0}}}" : (IsTC) ? "##teamcity[blockOpened name='{0}' description='']" : (IsTF) ? "##[group]{0}" : ">>> {0}") -f $Message)
 
             & $ScriptBlock
 
-            Write-Host ($IsGH ? "::endgroup::" : ($IsTC ? "##teamcity[blockClosed name='{0}']" : $IsTF ? "##[endgroup]" : "<<< {0}") -f $Message)
+            Write-Host ((IsGH) ? "::endgroup::" : ((IsTC) ? "##teamcity[blockClosed name='{0}']" : (IsTF) ? "##[endgroup]" : "<<< {0}") -f $Message)
         }
         Catch
         {
