@@ -1,3 +1,81 @@
+Function ConvertTo-CFNParameters
+{
+    <#
+    .SYNOPSIS
+        Convert JSON content to an array of AWS CloudFormation parameters.
+
+    .DESCRIPTION
+        The JSON content should contain an array of objects, each object should 
+        have a ParameterKey and ParameterValue property. This cmdlet returns an 
+        array of object of type Amazon.CloudFormation.Model.Parameter.
+
+    .PARAMETER Json
+        Specifies the JSON content.
+
+    .EXAMPLE
+        ConvertTo-CFNParameters -Json (Get-Content -Path "aws/infrastructure.prd.json" -Raw)
+    #>
+
+    Param(
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string] $Json
+    )
+
+    Process
+    {
+        Try
+        {
+            Return ConvertFrom-Json $Json | ForEach-Object {
+                New-Object Amazon.CloudFormation.Model.Parameter -Property @{
+                    ParameterKey = $_.ParameterKey
+                    ParameterValue = $_.ParameterValue
+                }
+            }
+        }
+        Catch
+        {
+            $PSCmdlet.ThrowTerminatingError($PSItem)
+        }
+    }
+}
+
+Function ConvertTo-CFNTags
+{
+    <#
+    .SYNOPSIS
+        Convert a hashtable to an array of AWS CloudFormation tags.
+
+    .PARAMETER Tags
+        The hashtable to convert.
+
+    .EXAMPLE
+        ConvertTo-CFNTags -Tags @{ "environment" = "prd" }
+    #>
+
+    param
+    (
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [hashtable] $Tags
+    )
+
+    Process
+    {
+        Try
+        {
+            Return $Tags.GetEnumerator() | ForEach-Object {
+                New-Object Amazon.CloudFormation.Model.Tag -Property @{
+                    Key = $_.Name
+                    Value = $_.Value.ToString()
+                }
+            }
+        }
+        Catch
+        {
+            $PSCmdlet.ThrowTerminatingError($PSItem)
+        }
+    }
+}
+
 Function Deploy-CFNStack
 {
     <#
