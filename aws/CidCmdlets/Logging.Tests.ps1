@@ -1,8 +1,12 @@
-BeforeAll { 
+BeforeAll {
     . $PSScriptRoot/Logging.ps1
 }
 
 Describe "Use-CidLogGroup" {
+    BeforeAll {
+        Mock Get-CidEnvironment { @{ Runner = "manual" } }
+    }
+
     It "Returns the script block's return value" {
         $Result = Use-CidLogGroup -Message "Test" {
             42
@@ -10,19 +14,49 @@ Describe "Use-CidLogGroup" {
         $Result | Should -Be 42
     }
 
-    Context "Locally" {
+    It "Writes open and close tags" {
+        Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+            ">>> Test >>>"
+            "<<< Test <<<"
+        )
+    }
+
+    Context "In Azure Pipelines" {
+        BeforeAll {
+            Mock Get-CidEnvironment { @{ Runner = "tf" } }
+        }
+
         It "Writes open and close tags" {
-            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(">>> Test", "<<< Test")
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                "##[group]Test"
+                "##[endgroup]"
+            )
         }
     }
 
     Context "In GitHub Actions" {
         BeforeAll {
-            Mock IsGH { $True }
+            Mock Get-CidEnvironment { @{ Runner = "gh" } }
         }
 
         It "Writes open and close tags" {
-            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @("::group::{Test}", "::endgroup::")
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                "::group::{Test}"
+                "::endgroup::"
+            )
+        }
+    }
+
+    Context "In TeamCity" {
+        BeforeAll {
+            Mock Get-CidEnvironment { @{ Runner = "tc" } }
+        }
+
+        It "Writes open and close tags" {
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                "##teamcity[blockOpened name='Test' description='']"
+                "##teamcity[blockClosed name='Test']"
+            )
         }
     }
 }
