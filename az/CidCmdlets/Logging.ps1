@@ -1,3 +1,24 @@
+. $PSScriptRoot/Context.ps1
+
+$Format = @{
+    gh = @{ # GitHub Actions workflow commands
+        Open = { "::group::{{{0}}}" -f $Args[0] }
+        Close = { "::endgroup::" }
+    }
+    tc = @{ # TeamCity service messages
+        Open = { "##teamcity[blockOpened name='{0}' description='']" -f $Args[0] }
+        Close = { "##teamcity[blockClosed name='{0}']" -f $Args[0] }
+    }
+    tf = @{ # Azure DevOps formatting commands
+        Open = { "##[group]{0}" -f $Args[0] }
+        Close = { "##[endgroup]" }
+    }
+    manual = @{
+        Open = { ">>> {0} >>>" -f $Args[0] }
+        Close = { "<<< {0} <<<" -f $Args[0] }
+    }
+}
+
 Function Use-CidLogGroup
 {
     Param(
@@ -8,19 +29,17 @@ Function Use-CidLogGroup
         [ScriptBlock] $ScriptBlock
     )
 
-    # GitHub Actions workflow commands
-    # TeamCity service messages
-    # Azure DevOps formatting commands
-
     Process
     {
+        $CidContext = Get-CidContext
+
         Try
         {
-            Write-Host (($IsGH ? "::group::{{{0}}}" : $IsTC ? "##teamcity[blockOpened name='{0}' description='']" : $IsTF ? "##[group]{0}" : ">>> {0}") -f $Message)
+            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Open -ArgumentList $Message)
 
             & $ScriptBlock
 
-            Write-Host ($IsGH ? "::endgroup::" : ($IsTC ? "##teamcity[blockClosed name='{0}']" : $IsTF ? "##[endgroup]" : "<<< {0}") -f $Message)
+            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Close -ArgumentList $Message)
         }
         Catch
         {

@@ -1,4 +1,4 @@
-. $PSScriptRoot/Environment.ps1
+. $PSScriptRoot/Context.ps1
 
 $Format = @{
     gh = @{ # GitHub Actions workflow commands
@@ -31,15 +31,15 @@ Function Use-CidLogGroup
 
     Process
     {
-        $Cid = Get-CidEnvironment
+        $CidContext = Get-CidContext
 
         Try
         {
-            Write-Host (Invoke-Command -ScriptBlock $Format[$Cid.Runner].Open -ArgumentList $Message)
+            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Open -ArgumentList $Message)
 
             & $ScriptBlock
 
-            Write-Host (Invoke-Command -ScriptBlock $Format[$Cid.Runner].Close -ArgumentList $Message)
+            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Close -ArgumentList $Message)
         }
         Catch
         {

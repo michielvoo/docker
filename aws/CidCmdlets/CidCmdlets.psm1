@@ -1,2 +1,2 @@
-. $PSScriptRoot/Environment.ps1
+. $PSScriptRoot/Context.ps1
 . $PSScriptRoot/Logging.ps1

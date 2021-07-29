@@ -1,4 +1,4 @@
-Function Get-CidEnvironment
+Function Get-CidContext
 {
     $Defaults = @{
         ArtifactsPath = $Null
@@ -11,8 +11,8 @@ Function Get-CidEnvironment
         Scm = $Null
     }
 
-    $Runner = Get-CidRunner
-    $Scm = Get-CidScm
+    $Runner = Get-CidContextFromRunner
+    $Scm = Get-CidContextFromScm
 
     $Environment = @{
         ArtifactsPath = $Env:CID_ARTIFACTS_PATH
@@ -36,7 +36,7 @@ Function Get-CidEnvironment
     Return $Result.AsReadOnly()
 }
 
-Function Get-CidRunner
+Function Get-CidContextFromRunner
 {
     If (Test-Path -Path "Env:GITHUB_ACTION")
     {
@@ -68,7 +68,7 @@ Function Get-CidRunner
     }
 }
 
-Function Get-CidScm
+Function Get-CidContextFromScm
 {
     git rev-parse *> $Null
 
