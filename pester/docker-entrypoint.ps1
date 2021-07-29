@@ -1,2 +1,2 @@
 #! /usr/bin/pwsh
-Invoke-Pester @Args
+Invoke-Pester -Configuration @{ Output = @{ Verbosity = "Detailed" } } @Args
