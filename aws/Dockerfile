@@ -7,11 +7,6 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
 SHELL ["pwsh", "-Command"]
 
-COPY AwsCmdlets /usr/local/share/powershell/Modules/AwsCmdlets
-COPY CidCmdlets /usr/local/share/powershell/Modules/CidCmdlets
-RUN Test-ModuleManifest -Path /usr/local/share/powershell/Modules/AwsCmdlets/AwsCmdlets.psd1 \
-    && Test-ModuleManifest -Path /usr/local/share/powershell/Modules/CidCmdlets/CidCmdlets.psd1
-
 RUN apk update --no-cache \
     && apk add git=2.26.3-r0 --no-cache \
     && Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
@@ -24,6 +19,11 @@ RUN apk update --no-cache \
     && Write-Output "Import-Module AWS.Tools.Installer" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AwsCmdlets" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile
+
+COPY AwsCmdlets /usr/local/share/powershell/Modules/AwsCmdlets
+COPY CidCmdlets /usr/local/share/powershell/Modules/CidCmdlets
+RUN Test-ModuleManifest -Path /usr/local/share/powershell/Modules/AwsCmdlets/AwsCmdlets.psd1 \
+    && Test-ModuleManifest -Path /usr/local/share/powershell/Modules/CidCmdlets/CidCmdlets.psd1
 
 WORKDIR /root/work
 
