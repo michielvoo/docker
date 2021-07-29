@@ -16,11 +16,13 @@ Function Get-CidEnvironment
 
     $Environment = @{
         ArtifactsPath = $Env:CID_ARTIFACTS_PATH
-        Commit = $Env:CID_COMMIT_ID
+        Commit = $Env:CID_COMMIT
         Deployment = $Env:CID_DEPLOYMENT
         Environment = $Env:CID_ENVIRONMENT
         Name = $Env:CID_NAME
-        Run = $Env:CID_RUN_ID
+        Run = $Env:CID_RUN
+        Runner = $Env:CID_RUNNER
+        Scm = $Env:CID_SCM
     }
 
     $Result = [Ordered] @{}

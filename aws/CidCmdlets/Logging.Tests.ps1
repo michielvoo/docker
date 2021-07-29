@@ -21,7 +21,7 @@ Describe "Use-CidLogGroup" {
         )
     }
 
-    Context "In Azure Pipelines" {
+    Context "Azure Pipelines" {
         BeforeAll {
             Mock Get-CidEnvironment { @{ Runner = "tf" } }
         }
@@ -34,7 +34,7 @@ Describe "Use-CidLogGroup" {
         }
     }
 
-    Context "In GitHub Actions" {
+    Context "GitHub Actions" {
         BeforeAll {
             Mock Get-CidEnvironment { @{ Runner = "gh" } }
         }
@@ -47,7 +47,7 @@ Describe "Use-CidLogGroup" {
         }
     }
 
-    Context "In TeamCity" {
+    Context "TeamCity" {
         BeforeAll {
             Mock Get-CidEnvironment { @{ Runner = "tc" } }
         }
