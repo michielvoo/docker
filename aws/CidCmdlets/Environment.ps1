@@ -68,7 +68,7 @@ Function Get-CidRunner
 
 Function Get-CidScm
 {
-    git rev-parse *> Out-Null
+    git rev-parse *> $Null
 
     If ($LastExitCode -eq 0)
     {
