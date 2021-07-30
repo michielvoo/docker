@@ -1,10 +1,18 @@
 BeforeAll {
-    Install-Module -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFormation
-    Import-Module AWS.Tools.CloudFormation
     . $PSScriptRoot/CloudFormation.ps1
 }
 
 Describe "ConvertTo-CFNParameters" {
+    BeforeAll {
+        Mock New-Object {
+            $Object = @{}
+            $Property.GetEnumerator() | ForEach-Object {
+                $Object[$_.Name] = $_.Value
+            }
+            Return $Object
+        } -ParameterFilter { $TypeName -eq "Amazon.CloudFormation.Model.Parameter" }
+    }
+
     It "Converts a JSON array to an array of CloudFormation parameters" {
         $Json = ConvertTo-Json -InputObject @(
             @{ ParameterKey = "A"; ParameterValue = "12" }
@@ -21,6 +29,16 @@ Describe "ConvertTo-CFNParameters" {
 }
 
 Describe "ConvertTo-CFNTags" {
+    BeforeAll {
+        Mock New-Object {
+            $Object = @{}
+            $Property.GetEnumerator() | ForEach-Object {
+                $Object[$_.Name] = $_.Value
+            }
+            Return $Object
+        } -ParameterFilter { $TypeName -eq "Amazon.CloudFormation.Model.Tag" }
+    }
+
     It "Converts a hashtable to an array of CloudFormation tags" {
         $Hashtable = @{
             "A" = "12"

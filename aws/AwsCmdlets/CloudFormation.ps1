@@ -26,7 +26,7 @@ Function ConvertTo-CFNParameters
         Try
         {
             Return ConvertFrom-Json $Json | ForEach-Object {
-                New-Object Amazon.CloudFormation.Model.Parameter -Property @{
+                New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
                     ParameterKey = $_.ParameterKey
                     ParameterValue = $_.ParameterValue
                 }
@@ -63,7 +63,7 @@ Function ConvertTo-CFNTags
         Try
         {
             Return $Tags.GetEnumerator() | ForEach-Object {
-                New-Object Amazon.CloudFormation.Model.Tag -Property @{
+                New-Object -TypeName "Amazon.CloudFormation.Model.Tag" -Property @{
                     Key = $_.Name
                     Value = $_.Value.ToString()
                 }
