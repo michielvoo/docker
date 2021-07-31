@@ -56,11 +56,19 @@ Describe "ConvertTo-CFNTags" {
 
 Describe "Deploy-CFNStack" {
     BeforeAll {
+        $Parameters = @{
+            # Default parameters passed to Deploy-CFNStack in tests
+            StackName = "Stack"
+            ChangeSetName = "ChangeSet"
+        }
+
         $ChangeSet = @{
+            # A change set that can be started
             ExecutionStatus = "AVAILABLE"
             Status = "CREATE_COMPLETE"
         }
 
+        # AWS Tools for PowerShell Cmdlets
         Function Get-CFNChangeSet { param($ChangeSetName, $StackName) $ChangeSet }
         Function Get-CFNStack { param($StackName) }
         Function New-CFNChangeSet { param($ChangeSetName, $ChangeSetType, $StackName, $Parameter) }
@@ -83,7 +91,7 @@ Describe "Deploy-CFNStack" {
         It "Creates change set of type CREATE if stack status is REVIEW_IN_PROGRESS" {
             $Stack.StackStatus = "REVIEW_IN_PROGRESS"
 
-            Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+            Deploy-CFNStack @Parameters
 
             Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "CREATE" }
         }
@@ -91,7 +99,7 @@ Describe "Deploy-CFNStack" {
         It "Creates change set of type UPDATE if stack status is CREATE_COMPLETE" {
             $Stack.StackStatus = "CREATE_COMPLETE"
 
-            Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+            Deploy-CFNStack @Parameters
 
             Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "UPDATE" }
         }
@@ -99,7 +107,7 @@ Describe "Deploy-CFNStack" {
         It "Creates change set of type UPDATE if stack status is UPDATE_COMPLETE" {
             $Stack.StackStatus = "UPDATE_COMPLETE"
 
-            Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+            Deploy-CFNStack @Parameters
 
             Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "UPDATE" }
         }
@@ -107,30 +115,30 @@ Describe "Deploy-CFNStack" {
         It "Terminates if stack status is not supported" {
             $Stack.StackStatus = "SOME_UNSUPPORTED_STATUS"
 
-            { Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet" } | Should -Throw
+            { Deploy-CFNStack @Parameters } | Should -Throw
         }
     }
 
     It "Creates change set of type CREATE" {
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+        Deploy-CFNStack @Parameters
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "CREATE" }
     }
 
     It "Creates change set with stack name" {
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+        Deploy-CFNStack @Parameters
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Stack" }
     }
 
     It "Creates new change set with change set name" {
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+        Deploy-CFNStack @Parameters
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" }
     }
 
     It "Creates new change set with remaining parameters" {
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet" -Parameter "Value"
+        Deploy-CFNStack @Parameters -Parameter "Value"
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $Parameter -eq "Value" }
     }
@@ -153,7 +161,7 @@ Describe "Deploy-CFNStack" {
             Return $ChangeSet
         } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" }
 
-        { Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet" } | Should -Throw
+        { Deploy-CFNStack @Parameters } | Should -Throw
     }
 
     It "Terminates if change set execution status is not supported" {
@@ -164,13 +172,13 @@ Describe "Deploy-CFNStack" {
 
         Mock Get-CFNChangeSet { $ChangeSet } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" }
 
-        { Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet" } | Should -Throw
+        { Deploy-CFNStack @Parameters } | Should -Throw
     }
 
     It "Starts the change set" {
         Mock Start-CFNChangeSet {}
 
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet"
+        Deploy-CFNStack @Parameters
 
         Should -Invoke -CommandName Start-CFNChangeSet -ParameterFilter { $StackName -eq "Stack" -and $ChangeSetName -eq "ChangeSet" }
     }
@@ -178,7 +186,7 @@ Describe "Deploy-CFNStack" {
     It "Waits for and returns the stack" {
         Mock Wait-CFNStack { "stack" }
 
-        Deploy-CFNStack -StackName "Stack" -ChangeSetName "ChangeSet" -Timeout 30 | Should -Be "stack"
+        Deploy-CFNStack @Parameters -Timeout 30 | Should -Be "stack"
 
         Should -Invoke -CommandName Wait-CFNStack -ParameterFilter { $StackName -eq "Stack" -and $Timeout -eq 30 }
     }
