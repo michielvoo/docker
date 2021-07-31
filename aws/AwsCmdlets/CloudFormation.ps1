@@ -119,32 +119,32 @@ Function Deploy-CFNStack
     {
         Try
         {
-            $ChangeSetType = "UPDATE"
+            $ChangeSetType = "CREATE"
 
-            Try
+            If (Test-CFNStack -StackName $StackName)
             {
                 $Stack = Get-CFNStack -StackName $StackName
+                $Status = $Stack.StackStatus
 
-                If ($Stack.StackStatus -eq "REVIEW_IN_PROGRESS")
+                If ($Status -eq "REVIEW_IN_PROGRESS")
                 {
                     $ChangeSetType = "CREATE"
                 }
-            }
-            Catch
-            {
-                $Message = $_.Exception.Message
-
-                If ($Message -eq "Stack with id $StackName does not exist")
+                ElseIf ($Status -eq "CREATE_COMPLETE" -or $Status -eq "UPDATE_COMPLETE")
                 {
-                    $ChangeSetType = "CREATE"
+                    $ChangeSetType = "UPDATE"
                 }
                 Else
                 {
-                    Throw
+                    Throw "Stack with status $Status cannot be deployed"
                 }
             }
 
-            $Parameters = @{}
+            $Parameters = @{
+                ChangeSetName = $ChangeSetName
+                ChangeSetType = $ChangeSetType
+                StackName = $StackName
+            }
             For ($i = 0; $i -lt $Remaining.Count; $i += 2)
             {
                 $Name = $Remaining[$i]
@@ -153,34 +153,26 @@ Function Deploy-CFNStack
                 $Parameters.Add($Name, $Value)
             }
 
-            $ChangeSet = New-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -ChangeSetType $ChangeSetType @Parameters
+            New-CFNChangeSet @Parameters
 
-            Do
+            $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
+            While ($ChangeSet.Status -eq "CREATE_PENDING" -or $ChangeSet.Status -eq "CREATE_IN_PROGRESS")
             {
                 $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
-                Start-Sleep -Seconds 3
             }
-            While (($ChangeSet.Status -eq "CREATE_PENDING") -or ($ChangeSet.Status -eq "CREATE_IN_PROGRESS"))
 
-            If ($ChangeSet.Status -eq "FAILED")
+            If ($ChangeSet.Status -ne "CREATE_COMPLETE")
             {
-                Write-Host "Skipped deployment of stack $StackName." $ChangeSet.StatusReason
+                Throw "Change set with status $($ChangeSet.Status) cannot be started"
             }
-            ElseIf ($ChangeSet.ExecutionStatus -ne "AVAILABLE")
+
+            If ($ChangeSet.ExecutionStatus -ne "AVAILABLE")
             {
-                Write-Host "Unable to execute change set $ChangeSet."
-            }
-            Else
-            {
-                Write-Host "Executing change set $ChangeSetName..."
-
-                Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
-                $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout
-
-                Write-Host "Deployed stack $StackName."
+                Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Return $Stack
+            Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
+            Wait-CFNStack -StackName $StackName -Timeout $Timeout
         }
         Catch
         {
