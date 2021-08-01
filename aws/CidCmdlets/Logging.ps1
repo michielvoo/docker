@@ -1,5 +1,5 @@
 $Format = @{
-    gh = @{ 
+    gh = @{ # GitHub Actions workflow commands
         Open = { "::group::{{{0}}}" -f $Args[0] }
         Close = { "::endgroup::" }
     }
