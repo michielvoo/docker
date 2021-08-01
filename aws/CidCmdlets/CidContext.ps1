@@ -63,7 +63,7 @@ Function Get-CidContextFromRunner
         Return @{
             ArtifactsPath = Join-Path -Path (Get-Location) -ChildPath "artifacts"
             Run = Get-Date -AsUTC -Format FileDateTimeUniversal
-            Runner = "manual"
+            Runner = "local"
         }
     }
 }
@@ -85,9 +85,8 @@ Function Get-CidContextFromScm
     Else
     {
         Return @{
-            Commit = "none"
+            Commit = "unknown"
             Name = Split-Path -Path (Get-Location) -Leaf
-            Scm = "none"
         }
     }
 }

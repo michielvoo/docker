@@ -13,13 +13,13 @@ Describe "Get-CidContext" {
     It "Returns artifacts path, run, and runner" {
         (Get-CidContext).ArtifactsPath | Should -Be (Join-Path -Path (Get-Location) -ChildPath "artifacts")
         (Get-CidContext).Run | Should -Match "^\d{8}T\d{6}\d+Z"
-        (Get-CidContext).Runner | Should -Be "manual"
+        (Get-CidContext).Runner | Should -Be "local"
     }
 
     It "Returns commit, name, and SCM" {
-        (Get-CidContext).Commit | Should -Be "none"
+        (Get-CidContext).Commit | Should -Be "unknown"
         (Get-CidContext).Name | Should -Be (Split-Path -Path (Get-Location) -Leaf)
-        (Get-CidContext).Scm | Should -Be "none"
+        (Get-CidContext).Scm | Should -Be $Null
     }
 
     It "Returns deployment" {
