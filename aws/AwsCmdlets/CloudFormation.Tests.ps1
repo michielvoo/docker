@@ -54,6 +54,42 @@ Describe "ConvertTo-CFNTags" {
     }
 }
 
+Describe "Get-CFNChangeSetName" {
+    It "Replaces . with -" {
+        Get-CFNStackName -Name "example.com" | Should -Be "example-com"
+    }
+
+    It "Replaces _ with -" {
+        Get-CFNStackName -Name "some_example" | Should -Be "some-example"
+    }
+
+    It "Removes invalid characters" {
+        Get-CFNStackName -Name "some/example" | Should -Be "someexample"
+    }
+
+    It "Limits length" {
+        (Get-CFNStackName -Name ("test" * 40)).Length | Should -Be 128
+    }
+}
+
+Describe "Get-CFNStackName" {
+    It "Replaces . with -" {
+        Get-CFNStackName -Name "example.com" | Should -Be "example-com"
+    }
+
+    It "Replaces _ with -" {
+        Get-CFNStackName -Name "some_example" | Should -Be "some-example"
+    }
+
+    It "Removes invalid characters" {
+        Get-CFNStackName -Name "some/example" | Should -Be "someexample"
+    }
+
+    It "Limits length" {
+        (Get-CFNStackName -Name ("test" * 40)).Length | Should -Be 128
+    }
+}
+
 Describe "Deploy-CFNStack" {
     BeforeAll {
         $Parameters = @{

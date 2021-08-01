@@ -76,6 +76,31 @@ Function ConvertTo-CFNTags
     }
 }
 
+Function Get-CFNChangeSetName
+{
+    param(
+        [Parameter(Mandatory)]
+        [string] $Name
+    )
+
+    Return Get-CFNStackName -Name $Name
+}
+
+Function Get-CFNStackName
+{
+    param(
+        [Parameter(Mandatory)]
+        [string] $Name
+    )
+
+    $Result = $Name -replace "[._]","-"
+    $Result = $Result -replace "[^A-Za-z-]",""
+    $Result = $Result -replace "-+","-"
+    $Result = $Result.Substring(0, [System.Math]::Min($Result.Length, 128))
+
+    Return $Result
+}
+
 Function Deploy-CFNStack
 {
     <#
