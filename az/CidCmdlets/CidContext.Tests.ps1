@@ -1,5 +1,5 @@
 BeforeAll { 
-    . $PSScriptRoot/Context.ps1
+    . $PSScriptRoot/CidContext.ps1
 }
 
 Describe "Get-CidContext" {

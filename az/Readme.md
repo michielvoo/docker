@@ -11,6 +11,8 @@ The following PowerShell modules are installed:
 - [AzCmdlets](AzCmdlets)
 - [CidCmdlets](CidCmdlets)
 
+## Usage
+
 This Docker image supports automated resource provisioning and application 
 deployment to Azure. The [`Connect-AzAccount`][credentials] cmdlet is 
 used for authentication, which requires the tentant ID and the credentials of 
@@ -23,7 +25,24 @@ docker run --rm -it -v $PWD:/root/work --env AZ_CLIENT_ID --env AZ_CLIENT_wECRET
 
 (This command uses a 'local' build of the Docker image named `az`.)
 
+The global constant `$CidContext` provides default parameter values for several 
+cmdlets, and is initialized based on the SCM system in use (e.g. Git) and the 
+execution environment (e.g. GitHub Actions, or Azure Pipelines). During 
+initialization the following environment variables, when set, are used to 
+override the values:
+
+- `CID_ARTIFACTS_PATH` (the path used as output path for build commands)
+- `CID_COMMIT` (the identifier of the commit that is checked out)
+- `CID_DEPLOYMENT` (the unique name of the deployment, typically a concatenation of several other values)
+- `CID_ENVIRONMENT` (the environment to which an application is being deployed, e.g. `prd`)
+- `CID_NAME` (the name of the unit that is being deployed or published)
+- `CID_RUN` (the ID of the run, also known as the build or the action, depending on the execution environment's nomenclature)
+- `CID_RUNNER` (e.g. `gh` for GitHub Actions, or `tf` for Azure Pipelines)
+- `CID_SCM` (e.g. `git`)
+
 [credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
+
+## Contributing
 
 ### How to: Run automated tests
 

@@ -10,6 +10,8 @@ The following PowerShell modules are installed:
 - [AwsCmdlets](AwsCmdlets)
 - [CidCmdlets](CidCmdlets)
 
+## Usage
+
 This Docker image supports automated resource provisioning and application 
 deployment to AWS. The [`Set-AWSCredential`][credentials] cmdlet is 
 used for authentication, which requires the access key and secret key of an 
@@ -25,6 +27,21 @@ docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --e
 ```
 
 (This command uses a 'local' build of the Docker image named `aws`.)
+
+The global constant `$CidContext` provides default parameter values for several 
+cmdlets, and is initialized based on the SCM system in use (e.g. Git) and the 
+execution environment (e.g. GitHub Actions, or Azure Pipelines). During 
+initialization the following environment variables, when set, are used to 
+override the values:
+
+- `CID_ARTIFACTS_PATH` (the path used as output path for build commands)
+- `CID_COMMIT` (the identifier of the commit that is checked out)
+- `CID_DEPLOYMENT` (the unique name of the deployment, typically a concatenation of several other values)
+- `CID_ENVIRONMENT` (the environment to which an application is being deployed, e.g. `prd`)
+- `CID_NAME` (the name of the unit that is being deployed or published)
+- `CID_RUN` (the ID of the run, also known as the build or the action, depending on the execution environment's nomenclature)
+- `CID_RUNNER` (e.g. `gh` for GitHub Actions, or `tf` for Azure Pipelines)
+- `CID_SCM` (e.g. `git`)
 
 [credentials]: https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html
 [region]: https://docs.aws.amazon.com/powershell/latest/userguide/pstools-installing-specifying-region.html
