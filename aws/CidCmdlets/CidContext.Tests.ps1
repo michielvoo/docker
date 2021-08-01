@@ -8,40 +8,44 @@ Describe "Get-CidContext" {
         {
             $LastExitCode = 1
         }
+
+        $CidContext = Get-CidContext
     }
 
     It "Returns artifacts path, run, and runner" {
-        (Get-CidContext).ArtifactsPath | Should -Be (Join-Path -Path (Get-Location) -ChildPath "artifacts")
-        (Get-CidContext).Run | Should -Match "^\d{8}T\d{6}\d+Z"
-        (Get-CidContext).Runner | Should -Be "local"
+        $CidContext.ArtifactsPath | Should -Be (Join-Path -Path (Get-Location) -ChildPath "artifacts")
+        $CidContext.Run | Should -Match "^\d{8}T\d{6}\d+Z"
+        $CidContext.Runner | Should -Be "local"
     }
 
     It "Returns commit, name, and SCM" {
-        (Get-CidContext).Commit | Should -Be "unknown"
-        (Get-CidContext).Name | Should -Be (Split-Path -Path (Get-Location) -Leaf)
-        (Get-CidContext).Scm | Should -Be $Null
+        $CidContext.Commit | Should -Be "unknown"
+        $CidContext.Name | Should -Be (Split-Path -Path (Get-Location) -Leaf)
+        $CidContext.Scm | Should -Be $Null
     }
 
     It "Returns deployment" {
-        $CidContext = Get-CidContext
         $CidContext.Deployment | Should -Be "$($CidContext.Name)-$($CidContext.Scm)$($CidContext.Commit)-$($CidContext.Runner)$($CidContext.Run)"
     }
 
     It "Returns environment" {
-        (Get-CidContext).Environment | Should -Be "dev"
+        $CidContext.Environment | Should -Be "dev"
     }
 
     Context "Azure Pipelines" {
         BeforeAll {
             Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:TF_BUILD" }
             $Env:BUILD_BINARIESDIRECTORY = "/home/vsts/work/1/b"
-            $Env:BUILD_BUILDID = "20210718.12"
+            $Env:BUILD_BUILDID = "27534"
+
+            $CidContext = Get-CidContext
         }
 
         It "Returns artifacts path, run, and runner" {
-            (Get-CidContext).ArtifactsPath | Should -Be "/home/vsts/work/1/b"
-            (Get-CidContext).Run | Should -Be "20210718.12"
-            (Get-CidContext).Runner | Should -Be "tf"
+            $CidContext.ArtifactsPath | Should -Be "/home/vsts/work/1/b"
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "tf"
+            $CidContext.Deployment | Should -Match "-tf27534$"
         }
 
         AfterAll {
@@ -58,12 +62,15 @@ Describe "Get-CidContext" {
 
         BeforeEach {
             Mock git { Set-Variable -Scope "global" -Name "LastExitCode" -Value 0 } -ParameterFilter { $Args.Count -eq 1 -and $Args[0] -eq "rev-parse" }
+
+            $CidContext = Get-CidContext
         }
 
         It "Returns commit, name, and SCM" {
-            (Get-CidContext).Commit | Should -Be "c4bbc3d37aff"
-            (Get-CidContext).Name | Should -Be "application"
-            (Get-CidContext).Scm | Should -Be "git"
+            $CidContext.Commit | Should -Be "c4bbc3d37aff"
+            $CidContext.Name | Should -Be "application"
+            $CidContext.Scm | Should -Be "git"
+            $CidContext.Deployment | Should -Match "-gitc4bbc3d37aff-"
         }
 
         AfterEach {
@@ -74,20 +81,24 @@ Describe "Get-CidContext" {
     Context "GitHub Actions" {
         BeforeAll {
             Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:GITHUB_ACTION" }
+
+            $CidContext = Get-CidContext
         }
 
         It "Returns artifacts path, run, and runner" {
-            (Get-CidContext).Runner | Should -Be "gh"
+            $CidContext.Runner | Should -Be "gh"
         }
     }
 
     Context "TeamCity" {
         BeforeAll {
             Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:TEAMCITY_VERSION" }
+
+            $CidContext = Get-CidContext
         }
 
         It "Returns artifacts path, run, and runner" {
-            (Get-CidContext).Runner | Should -Be "tc"
+            $CidContext.Runner | Should -Be "tc"
         }
     }
 
@@ -104,10 +115,11 @@ Describe "Get-CidContext" {
             $Env:CID_RUN = "Run from environment variables"
             $Env:CID_RUNNER = "Runner from environment variables"
             $Env:CID_SCM = "Scm from environment variables"
+
+            $CidContext = Get-CidContext
         }
 
         It "Return artifacts path, commit, deployment, environment, name, run, runner, and scm from environment variables" {
-            $CidContext = Get-CidContext
             $CidContext.ArtifactsPath | Should -Be "ArtifactsPath from environment variables"
             $CidContext.Commit | Should -Be "Commit from environment variables"
             $CidContext.Deployment | Should -Be "Deployment from environment variables"
