@@ -1,4 +1,4 @@
-. $PSScriptRoot/Context.ps1
+. $PSScriptRoot/CidContext.ps1
 
 $Format = @{
     gh = @{ # GitHub Actions workflow commands
