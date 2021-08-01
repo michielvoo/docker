@@ -1,7 +1,5 @@
-. $PSScriptRoot/CidContext.ps1
-
 $Format = @{
-    gh = @{ # GitHub Actions workflow commands
+    gh = @{ 
         Open = { "::group::{{{0}}}" -f $Args[0] }
         Close = { "::endgroup::" }
     }
@@ -31,8 +29,6 @@ Function Use-CidLogGroup
 
     Process
     {
-        $CidContext = Get-CidContext
-
         Try
         {
             Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Open -ArgumentList $Message)

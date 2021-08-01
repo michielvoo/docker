@@ -1,10 +1,11 @@
 BeforeAll {
     . $PSScriptRoot/Logging.ps1
+    $global:CidContext = @{}
 }
 
 Describe "Use-CidLogGroup" {
     BeforeAll {
-        Mock Get-CidContext { @{ Runner = "manual" } }
+        $CidContext.Runner = "manual"
     }
 
     It "Returns the script block's return value" {
@@ -23,7 +24,7 @@ Describe "Use-CidLogGroup" {
 
     Context "Azure Pipelines" {
         BeforeAll {
-            Mock Get-CidContext { @{ Runner = "tf" } }
+            $CidContext.Runner = "tf"
         }
 
         It "Writes open and close tags" {
@@ -36,7 +37,7 @@ Describe "Use-CidLogGroup" {
 
     Context "GitHub Actions" {
         BeforeAll {
-            Mock Get-CidContext { @{ Runner = "gh" } }
+            $CidContext.Runner = "gh"
         }
 
         It "Writes open and close tags" {
@@ -49,7 +50,7 @@ Describe "Use-CidLogGroup" {
 
     Context "TeamCity" {
         BeforeAll {
-            Mock Get-CidContext { @{ Runner = "tc" } }
+            $CidContext.Runner = "tc"
         }
 
         It "Writes open and close tags" {
