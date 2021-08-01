@@ -25,7 +25,14 @@ docker run --rm -it -v $PWD:/root/work --env AZ_CLIENT_ID --env AZ_CLIENT_wECRET
 
 [credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
 
-## Contributing
+### How to: Run automated tests
+
+```
+docker run --rm -it -v $PWD:/root/work pester -Output Detailed
+```
+
+(This command uses a 'local' build of the Docker image named `pester`.)
+
 
 ### How to: update PowerShell and Git
 

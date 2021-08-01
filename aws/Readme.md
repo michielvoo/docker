@@ -34,11 +34,10 @@ docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --e
 ### How to: Run automated tests
 
 ```
-docker run --rm -it -v $PWD:/root/work pester
+docker run --rm -it -v $PWD:/root/work pester -Output Detailed
 ```
 
 (This command uses a 'local' build of the Docker image named `pester`.)
-
 
 ### How to: update PowerShell and Git
 
