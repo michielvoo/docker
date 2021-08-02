@@ -21,6 +21,14 @@ RUN apk update --no-cache \
     && Write-Output "Import-Module Az.Storage" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AzCmdlets" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile \
+    && Write-Output "If ((Test-Path -Path 'Env:AZ_CLIENT_ID') -and (Test-Path -Path 'Env:AZ_CLIENT_SECRET') -and (Test-Path -Path 'Env:AZ_TENANT_ID'))" | Out-File -Append -FilePath $Profile \
+    && Write-Output "{" | Out-File -Append -FilePath $Profile \
+    && Write-Output "    `$Username = `$Env:AZ_CLIENT_ID" | Out-File -Append -FilePath $Profile \
+    && Write-Output "    `$Password = ConvertTo-SecureString `$Env:AZ_CLIENT_SECRET -AsPlainText –Force" | Out-File -Append -FilePath $Profile \
+    && Write-Output "    `$Password = ConvertTo-SecureString `$Env:AZ_CLIENT_SECRET -AsPlainText –Force" | Out-File -Append -FilePath $Profile \
+    && Write-Output "    `$Credential = New-Object -TypeName PSCredential –ArgumentList `$Username, `$Password" | Out-File -Append -FilePath $Profile \
+    && Write-Output "    Connect-AzAccount -ServicePrincipal –TenantId `$Env:AZ_TENANT_ID -Credential `$Credential" | Out-File -Append -FilePath $Profile \
+    && Write-Output "}" | Out-File -Append -FilePath $Profile \
     && Write-Output "`$OriginalPrompt = (Get-Command Prompt).ScriptBlock" | Out-File -Append -FilePath $Profile \
     && Write-Output "Function Prompt { (Invoke-Command `$OriginalPrompt) -replace 'PS','Azure PS' }" | Out-File -Append -FilePath $Profile \
     && Disable-AzDataCollection
