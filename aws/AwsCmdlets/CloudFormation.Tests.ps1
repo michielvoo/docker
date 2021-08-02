@@ -106,12 +106,16 @@ Describe "Deploy-CFNStack" {
 
         # AWS Tools for PowerShell Cmdlets
         Function Get-CFNChangeSet { param($ChangeSetName, $StackName) $ChangeSet }
+        Function Get-CFNChangeSetName { param($Name) }
         Function Get-CFNStack { param($StackName) }
+        Function Get-CFNStackName { param($Name) }
         Function New-CFNChangeSet { param($ChangeSetName, $ChangeSetType, $StackName, $Parameter) }
         Function Start-CFNChangeSet { param($ChangeSetName, $StackName) }
         Function Test-CFNStack {}
         Function Wait-CFNStack { param($StackName, $Timeout) }
 
+        Mock Get-CFNChangeSetName { $Name }
+        Mock Get-CFNStackName { $Name }
         Mock New-CFNChangeSet {}
         Mock Test-CFNStack { $False }
     }
@@ -165,6 +169,26 @@ Describe "Deploy-CFNStack" {
         Deploy-CFNStack @Parameters
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Stack" }
+    }
+
+    It "Creates change set with stack name and change set name from CI/CD context" {
+        $global:CidContext = @{
+            Name = "Name"
+            Deployment = "Deployment"
+        }
+
+        Deploy-CFNStack
+
+        Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Name" -and $ChangeSetName -eq "Deployment" }
+    }
+
+    It "Ensures stack name and change set name are valid" {
+        Mock Get-CFNChangeSetName { "Deployment" }
+        Mock Get-CFNStackName { "Name" }
+
+        Deploy-CFNStack @Parameters
+
+        Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Name" -and $ChangeSetName -eq "Deployment" }
     }
 
     It "Creates new change set with change set name" {

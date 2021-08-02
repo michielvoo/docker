@@ -113,7 +113,12 @@ Function Deploy-CFNStack
         be passed on to the New-CFNStack or Update-CFNStack cmdlets.
 
     .PARAMETER StackName
-        The name that is associated with the stack.
+        The name that is associated with the stack. By default $CidContext.Name 
+        is used.
+
+    .PARAMETER ChangeSetName
+        The name of the change set used to deploy the stack. By default $CidContext.Deployment 
+        is used.
 
     .PARAMETER Timeout
         The amount of time in seconds to wait for deployment to complete.
@@ -128,12 +133,13 @@ Function Deploy-CFNStack
     #>
 
     Param(
-        [Parameter(Mandatory)]
-        [string] $StackName,
+        [Parameter()]
+        [string] $StackName = $CidContext.Name,
 
-        [Parameter(Mandatory)]
-        [string] $ChangeSetName,
+        [Parameter()]
+        [string] $ChangeSetName = $CidContext.Deployment,
 
+        [Parameter()]
         [int] $Timeout = 900,
 
         [Parameter(ValueFromRemainingArguments)]
@@ -144,6 +150,9 @@ Function Deploy-CFNStack
     {
         Try
         {
+            $StackName = Get-CFNStackName -Name $StackName
+            $ChangeSetName = Get-CFNChangeSetName -Name $ChangeSetName
+
             $ChangeSetType = "CREATE"
 
             If (Test-CFNStack -StackName $StackName)
