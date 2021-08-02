@@ -80,13 +80,19 @@ Describe "Get-CidContext" {
 
     Context "GitHub Actions" {
         BeforeAll {
-            Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:GITHUB_ACTION" }
+            Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:GITHUB_ACTIONS" }
+            $Env:GITHUB_RUN_ID = "27534"
 
             $CidContext = Get-CidContext
         }
 
         It "Returns artifacts path, run, and runner" {
+            $CidContext.Run | Should -Be "27534"
             $CidContext.Runner | Should -Be "gh"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:GITHUB_RUN_ID"
         }
     }
 

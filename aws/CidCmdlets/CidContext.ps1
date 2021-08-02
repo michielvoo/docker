@@ -38,9 +38,10 @@ Function Get-CidContext
 
 Function Get-CidContextFromRunner
 {
-    If (Test-Path -Path "Env:GITHUB_ACTION")
+    If (Test-Path -Path "Env:GITHUB_ACTIONS")
     {
         Return @{
+            Run = $Env:GITHUB_RUN_ID
             Runner = "gh"
         }
     }
