@@ -6,6 +6,8 @@ The following PowerShell modules are installed:
 
 - [Pester](https://www.powershellgallery.com/packages/Pester)
 
+## Usage
+
 This Docker image supports execution of Pester tests. A directory containing 
 PowerShell scripts and their accompanying tests should be mounted in the 
 working directory of the Docker container. The container executes the 
