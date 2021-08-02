@@ -35,6 +35,8 @@ After building the local Docker image run it to check the PowerShell version:
 docker run --rm -it --entrypoint pwsh pester -Version
 ```
 
+(Notice that this command overrides the entrypoint of the image.)
+
 ### How to: update Pester
 
 Find the latest version of the PowerShell modules that are installed and update 
