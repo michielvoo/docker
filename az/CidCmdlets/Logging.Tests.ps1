@@ -46,6 +46,19 @@ Describe "Use-CidLogGroup" {
         }
     }
 
+    Context "Bitbucket Pipelines" {
+        BeforeAll {
+            $CidContext.Runner = "bit"
+        }
+
+        It "Writes open and close tags" {
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                "Test"
+                ""
+            )
+        }
+    }
+
     Context "GitHub Actions" {
         BeforeAll {
             $CidContext.Runner = "gh"
@@ -55,6 +68,19 @@ Describe "Use-CidLogGroup" {
             Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
                 "::group::{Test}"
                 "::endgroup::"
+            )
+        }
+    }
+
+    Context "GitLab CI/CD Pipelines" {
+        BeforeAll {
+            $CidContext.Runner = "gl"
+        }
+
+        It "Writes open and close tags" {
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                "Test"
+                ""
             )
         }
     }

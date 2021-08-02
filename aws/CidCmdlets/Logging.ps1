@@ -1,18 +1,28 @@
 $Format = @{
+    az = @{ # Azure DevOps logging commands
+        Open = { "##[group]{0}" -f $Args[0] }
+        Close = { "##[endgroup]" }
+        Header = { "##[section]{0}" -f $Args[0] }
+    }
+    bit = @{ # Bitbucket ?
+        Open = { "{0}" -f $Args[0] }
+        Close = { "" }
+        Header = { "{0}" -f $Args[0] }
+    }
     gh = @{ # GitHub Actions workflow commands
         Open = { "::group::{{{0}}}" -f $Args[0] }
         Close = { "::endgroup::" }
         Header = { "### {0} ###" -f $Args[0] }
     }
+    gl = @{ # GitLab ?
+        Open = { "{0}" -f $Args[0] }
+        Close = { "" }
+        Header = { "{0}" -f $Args[0] }
+    }
     tc = @{ # TeamCity service messages
         Open = { "##teamcity[blockOpened name='{0}' description='']" -f $Args[0] }
         Close = { "##teamcity[blockClosed name='{0}']" -f $Args[0] }
         Header = { "### {0} ###" -f $Args[0] }
-    }
-    az = @{ # Azure DevOps logging commands
-        Open = { "##[group]{0}" -f $Args[0] }
-        Close = { "##[endgroup]" }
-        Header = { "##[section]{0}" -f $Args[0] }
     }
     local = @{
         Open = { ">>> {0} >>>" -f $Args[0] }

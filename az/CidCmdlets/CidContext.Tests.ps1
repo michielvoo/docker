@@ -43,7 +43,7 @@ Describe "Get-CidContext" {
 
             $CidContext.ArtifactsPath | Should -Be "/home/vsts/work/1/b"
             $CidContext.Run | Should -Be "27534"
-            $CidContext.Runner | Should -Be "tf"
+            $CidContext.Runner | Should -Be "az"
         }
 
         AfterAll {
@@ -107,6 +107,23 @@ Describe "Get-CidContext" {
 
         AfterAll {
             Remove-Item -Path "Env:GITHUB_RUN_ID"
+        }
+    }
+
+    Context "GitLab CI/CD Pipelines" {
+        BeforeAll {
+            $Env:CI_JOB_ID = "27534"
+        }
+
+        It "Returns run and runner" {
+            $CidContext = Get-CidContext
+
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "gl"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:CI_JOB_ID"
         }
     }
 

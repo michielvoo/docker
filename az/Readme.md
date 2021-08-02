@@ -45,7 +45,12 @@ override the values:
 - `CID_ENVIRONMENT`: the environment to which an application is being deployed, e.g. `prd`
 - `CID_NAME`: the name of the unit that is being deployed or published
 - `CID_RUN`: the ID of the run, also known as the build or the action, depending on the execution environment's nomenclature
-- `CID_RUNNER`: should be `bit` for Bitbucket Pipelines, `gh` for GitHub Actions, `tc` for TeamCity, `az` for Azure DevOps (Server) Pipelines
+  - Azure DevOps (Server) Pipelines: `BUILD_BUILDID`
+  - Bitbucket Pipelines: `BITBUCKET_BUILD_NUMBER`
+  - GitHub Actions: `GITHUB_RUN_ID`
+  - GitLab CI/CD pipelines: `CI_JOB_ID`
+  - TeamCity: `BUILD_NUMBER`
+- `CID_RUNNER`: the execution environment (`az`, `bit`, `gh`, `gl`, or `tc`), detection is based on `CID_RUN`
 - `CID_SCM`: e.g. `git`
 
 [credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount

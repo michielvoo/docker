@@ -38,7 +38,15 @@ Function Get-CidContext
 
 Function Get-CidContextFromRunner
  {
-    If (Test-Path -Path "Env:BITBUCKET_BUILD_NUMBER")
+    If (Test-Path -Path "Env:BUILD_BUILDID")
+    {
+        Return @{
+            ArtifactsPath = $Env:BUILD_BINARIESDIRECTORY
+            Run = $Env:BUILD_BUILDID
+            Runner = "az"
+        }
+    }
+    ElseIf (Test-Path -Path "Env:BITBUCKET_BUILD_NUMBER")
     {
         Return @{
             Run = $Env:BITBUCKET_BUILD_NUMBER
@@ -52,19 +60,18 @@ Function Get-CidContextFromRunner
             Runner = "gh"
         }
     }
+    ElseIf (Test-Path -Path "Env:CI_JOB_ID")
+    {
+        Return @{
+            Run = $Env:CI_JOB_ID
+            Runner = "gl"
+        }
+    }
     ElseIf (Test-Path -Path "Env:BUILD_NUMBER")
     {
         Return @{
             Run = $Env:BUILD_NUMBER
             Runner = "tc"
-        }
-    }
-    ElseIf (Test-Path -Path "Env:BUILD_BUILDID")
-    {
-        Return @{
-            ArtifactsPath = $Env:BUILD_BINARIESDIRECTORY
-            Run = $Env:BUILD_BUILDID
-            Runner = "tf"
         }
     }
     Else
