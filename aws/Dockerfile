@@ -12,17 +12,9 @@ RUN apk update --no-cache \
     && Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
     && Install-Module -Confirm:$False -Scope AllUsers -Name AWS.Tools.Installer -RequiredVersion 1.0.2.1 \
     && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFormation -RequiredVersion 4.1.14.0 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.14.0 \
-    && New-Item -Force -ItemType File -Path $Profile \
-    && Write-Output "Import-Module AWS.Tools.CloudFormation" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module AWS.Tools.CloudFront" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module AWS.Tools.Installer" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module AwsCmdlets" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile \
-    && Write-Output "If ((Test-Path -Path 'Env:AWS_ACCESS_KEY_ID') -and (Test-Path -Path 'Env:AWS_SECRET_ACCESS_KEY')) { Set-AWSCredential -StoreAs 'default' -AccessKey `$Env:AWS_ACCESS_KEY_ID -SecretKey `$Env:AWS_SECRET_ACCESS_KEY }" | Out-File -Append -FilePath $Profile \
-    && Write-Output "If (Test-Path -Path 'Env:AWS_DEFAULT_REGION') { Set-DefaultAWSRegion -Region `$Env:AWS_DEFAULT_REGION }" | Out-File -Append -FilePath $Profile \
-    && Write-Output "`$OriginalPrompt = (Get-Command Prompt).ScriptBlock" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Function Prompt { (Invoke-Command `$OriginalPrompt) -replace 'PS','AWS PS' }" | Out-File -Append -FilePath $Profile
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.14.0
+
+COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
 COPY AwsCmdlets /usr/local/share/powershell/Modules/AwsCmdlets
 COPY CidCmdlets /usr/local/share/powershell/Modules/CidCmdlets

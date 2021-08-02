@@ -25,7 +25,7 @@ docker run --rm -it -v $PWD:/root/work az -File deploy.ps1
 
 When PowerShell starts and the credentials of an authorized service principal 
 are present in the environment variables `AZ_CLIENT_ID`, `AZ_CLIENT_SECRET`, 
-and `AZ_TENANT_ID`, they are used to connect to Azure.
+and `AZ_TENANT_ID`, they are used to connect to Azure (see [Profile.ps1]).
 
 An example invocation that takes advantage of this is given below:
 

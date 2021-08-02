@@ -26,7 +26,7 @@ When PowerShell starts and the environment variables `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY` are present, they are saved as AWS credentials to the 
 persistent store (as the `default` profile). When the `AWS_DEFAULT_REGION` 
 environment variable is present then a default AWS region is also set into the 
-shell variable `$StoredAWSRegion`.
+shell variable `$StoredAWSRegion` (see <Profile.ps1>).
 
 An example invocation that takes advantage of this is given below:
 
