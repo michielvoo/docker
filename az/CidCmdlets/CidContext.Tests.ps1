@@ -32,6 +32,43 @@ Describe "Get-CidContext" {
         $CidContext.Environment | Should -Be "dev"
     }
 
+    Context "Azure Pipelines" {
+        BeforeAll {
+            $Env:BUILD_BINARIESDIRECTORY = "/home/vsts/work/1/b"
+            $Env:BUILD_BUILDID = "27534"
+        }
+
+        It "Returns artifacts path, run, and runner" {
+            $CidContext = Get-CidContext
+
+            $CidContext.ArtifactsPath | Should -Be "/home/vsts/work/1/b"
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "tf"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:BUILD_BINARIESDIRECTORY"
+            Remove-Item -Path "Env:BUILD_BUILDID"
+        }
+    }
+
+    Context "Bitbucket Pipelines" {
+        BeforeAll {
+            $Env:BITBUCKET_BUILD_NUMBER = "27534"
+        }
+
+        It "Returns run and runner" {
+            $CidContext = Get-CidContext
+
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "bit"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:BITBUCKET_BUILD_NUMBER"
+        }
+    }
+
     Context "Git" {
         BeforeAll {
             Mock git { "https://example.com/application.git" } -ParameterFilter { $Args[0] -eq "config" -and $Args[1] -eq "--get" -and $Args[2] -eq "remote.origin.url" }
@@ -53,6 +90,40 @@ Describe "Get-CidContext" {
 
         AfterEach {
             Remove-Variable -Scope "global" -Name "LastExitCode"
+        }
+    }
+
+    Context "GitHub Actions" {
+        BeforeAll {
+            $Env:GITHUB_RUN_ID = "27534"
+        }
+
+        It "Returns run and runner" {
+            $CidContext = Get-CidContext
+
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "gh"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:GITHUB_RUN_ID"
+        }
+    }
+
+    Context "TeamCity" {
+        BeforeAll {
+            $Env:BUILD_NUMBER = "27534"
+        }
+
+        It "Returns run and runner" {
+            $CidContext = Get-CidContext
+
+            $CidContext.Run | Should -Be "27534"
+            $CidContext.Runner | Should -Be "tc"
+        }
+
+        AfterAll {
+            Remove-Item -Path "Env:BUILD_NUMBER"
         }
     }
 
