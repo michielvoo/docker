@@ -12,20 +12,27 @@ The following PowerShell modules are installed:
 
 ## Usage
 
+(All example commands assume a 'local' build of the Docker image is available.)
+
 This Docker image supports automated resource provisioning and application 
-deployment to AWS. The code in the root user's PowerShell profile checks for 
-the existence of the well-known environment variables `AWS_ACCESS_KEY_ID` and 
-`AWS_SECRET_ACCESS_KEY` to save as AWS credentials to the persistent store as 
-the `default` profile. When `AWS_DEFAULT_REGION` is set then a default AWS 
-region is also set.
-
-An example invocation is given in below:
+deployment to AWS, by running a PowerShell script inside an optimized Docker 
+container.
 
 ```
-docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY --env AWS_DEFAULT_REGION aws -File example.ps1
+docker run --rm -it -v $PWD:/root/work aws -File deploy.ps1
 ```
 
-(This command uses a 'local' build of the Docker image named `aws`.)
+When PowerShell starts and the environment variables `AWS_ACCESS_KEY_ID` and 
+`AWS_SECRET_ACCESS_KEY` are present, they are saved as AWS credentials to the 
+persistent store (as the `default` profile). When the `AWS_DEFAULT_REGION` 
+environment variable is present then a default AWS region is also set into the 
+shell variable `$StoredAWSRegion`.
+
+An example invocation that takes advantage of this is given below:
+
+```
+docker run --rm -it -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION aws -Command "Get-CFNStack"
+```
 
 The global constant `$CidContext` provides default parameter values for several 
 cmdlets, and is initialized based on the SCM system in use (e.g. Git) and the 
@@ -52,8 +59,6 @@ override the values:
 ```
 docker run --rm -it -v $PWD:/root/work pester -Output Detailed
 ```
-
-(This command uses a 'local' build of the Docker image named `pester`.)
 
 ### How to: update PowerShell and Git
 

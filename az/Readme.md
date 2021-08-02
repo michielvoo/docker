@@ -13,17 +13,25 @@ The following PowerShell modules are installed:
 
 ## Usage
 
+(All example commands assume a 'local' build of the Docker image is available.)
+
 This Docker image supports automated resource provisioning and application 
-deployment to Azure. The [`Connect-AzAccount`][credentials] cmdlet is 
-used for authentication, which requires the tentant ID and the credentials of 
-an authorized service principal. An example is given in [`example.ps1`](example.ps1), 
-which uses the environment variables shown in the command below to authenticate.
+deployment to Azure, by running a PowerShell script inside an optimized Docker 
+container.
 
 ```
-docker run --rm -it -v $PWD:/root/work --env AZ_CLIENT_ID --env AZ_CLIENT_wECRET --env AZ_TENANT_ID az -File example.ps1
+docker run --rm -it -v $PWD:/root/work az -File deploy.ps1
 ```
 
-(This command uses a 'local' build of the Docker image named `az`.)
+When PowerShell starts and the credentials of an authorized service principal 
+are present in the environment variables `AZ_CLIENT_ID`, `AZ_CLIENT_SECRET`, 
+and `AZ_TENANT_ID`, they are used to connect to Azure.
+
+An example invocation that takes advantage of this is given below:
+
+```
+docker run --rm -it -e AZ_CLIENT_ID -e AZ_CLIENT_SECRET -e AZ_TENANT_ID az -Command "Get-AzDefault"
+```
 
 The global constant `$CidContext` provides default parameter values for several 
 cmdlets, and is initialized based on the SCM system in use (e.g. Git) and the 
@@ -49,9 +57,6 @@ override the values:
 ```
 docker run --rm -it -v $PWD:/root/work pester -Output Detailed
 ```
-
-(This command uses a 'local' build of the Docker image named `pester`.)
-
 
 ### How to: update PowerShell and Git
 
