@@ -21,6 +21,8 @@ RUN apk update --no-cache \
     && Write-Output "Import-Module Az.Storage" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AzCmdlets" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile \
+    && Write-Output "`$OriginalPrompt = (Get-Command Prompt).ScriptBlock" | Out-File -Append -FilePath $Profile \
+    && Write-Output "Function Prompt { (Invoke-Command `$OriginalPrompt) -replace 'PS','Azure PS' }" | Out-File -Append -FilePath $Profile \
     && Disable-AzDataCollection
 
 COPY AzCmdlets /usr/local/share/powershell/Modules/AzCmdlets

@@ -18,7 +18,9 @@ RUN apk update --no-cache \
     && Write-Output "Import-Module AWS.Tools.CloudFront" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AWS.Tools.Installer" | Out-File -Append -FilePath $Profile \
     && Write-Output "Import-Module AwsCmdlets" | Out-File -Append -FilePath $Profile \
-    && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile
+    && Write-Output "Import-Module CidCmdlets" | Out-File -Append -FilePath $Profile \
+    && Write-Output "`$OriginalPrompt = (Get-Command Prompt).ScriptBlock" | Out-File -Append -FilePath $Profile \
+    && Write-Output "Function Prompt { (Invoke-Command `$OriginalPrompt) -replace 'PS','AWS PS' }" | Out-File -Append -FilePath $Profile
 
 COPY AwsCmdlets /usr/local/share/powershell/Modules/AwsCmdlets
 COPY CidCmdlets /usr/local/share/powershell/Modules/CidCmdlets
