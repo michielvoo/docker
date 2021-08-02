@@ -23,13 +23,14 @@ Docker images maintained in this repository:
 - [aws](aws) - AWS Tools for PowerShell on Alpine Linux, for provisioning AWS resources and deploying applications to AWS
 - [az](az) - Azure PowerShell on Alpine Linux, for provisioning Azure resources and deploying applications to Azure
 - [hugo](hugo) - Hugo Extended and Git on Alpine Linux, for building static websites
+- [pester](pester) - Pester for PowerShell on Alpine Linux, for automated testing of PowerShell scripts and modules
 
 ## Contributing
 
 ### How to: update a Docker image
 
 To test the changes made to a Dockerfile, remove the last locally built Docker 
-image and rebuild the local Docker image:
+image (optional) and rebuild the local Docker image:
 
 ```
 docker image rm $(basename $PWD)
