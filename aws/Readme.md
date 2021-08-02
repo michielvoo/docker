@@ -13,17 +13,16 @@ The following PowerShell modules are installed:
 ## Usage
 
 This Docker image supports automated resource provisioning and application 
-deployment to AWS. The [`Set-AWSCredential`][credentials] cmdlet is 
-used for authentication, which requires the access key and secret key of an 
-authorized IAM user. The [`Set-DefaultAWSRegion`][region] cmdlet can be used to 
-set a default region for all commands.
+deployment to AWS. The code in the root user's PowerShell profile checks for 
+the existence of the well-known environment variables `AWS_ACCESS_KEY_ID` and 
+`AWS_SECRET_ACCESS_KEY` to save as AWS credentials to the persistent store as 
+the `default` profile. When `AWS_DEFAULT_REGION` is set then a default AWS 
+region is also set.
 
-An example is given in [`example.ps1`](example.ps1), which uses the environment 
-variables shown in the command below to authenticate and to set a default 
-region.
+An example invocation is given in below:
 
 ```
-docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY --env AWS_REGION --env AWS_SECRET_KEY aws -File example.ps1
+docker run --rm -it -v $PWD:/root/work --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY --env AWS_DEFAULT_REGION aws -File example.ps1
 ```
 
 (This command uses a 'local' build of the Docker image named `aws`.)
