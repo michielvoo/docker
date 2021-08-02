@@ -9,7 +9,7 @@ $Format = @{
         Close = { "##teamcity[blockClosed name='{0}']" -f $Args[0] }
         Header = { "### {0} ###" -f $Args[0] }
     }
-    tf = @{ # Azure DevOps logging commands
+    az = @{ # Azure DevOps logging commands
         Open = { "##[group]{0}" -f $Args[0] }
         Close = { "##[endgroup]" }
         Header = { "##[section]{0}" -f $Args[0] }

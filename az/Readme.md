@@ -39,14 +39,14 @@ execution environment (e.g. GitHub Actions, or Azure Pipelines). During
 initialization the following environment variables, when set, are used to 
 override the values:
 
-- `CID_ARTIFACTS_PATH` (the path used as output path for build commands)
-- `CID_COMMIT` (the identifier of the commit that is checked out)
-- `CID_DEPLOYMENT` (the unique name of the deployment, typically a concatenation of several other values)
-- `CID_ENVIRONMENT` (the environment to which an application is being deployed, e.g. `prd`)
-- `CID_NAME` (the name of the unit that is being deployed or published)
-- `CID_RUN` (the ID of the run, also known as the build or the action, depending on the execution environment's nomenclature)
-- `CID_RUNNER` (e.g. `gh` for GitHub Actions, or `tf` for Azure Pipelines)
-- `CID_SCM` (e.g. `git`)
+- `CID_ARTIFACTS_PATH`: the path used as output path for build commands
+- `CID_COMMIT`: the identifier of the commit that is checked out
+- `CID_DEPLOYMENT`: the unique name of the deployment, typically a concatenation of several other values
+- `CID_ENVIRONMENT`: the environment to which an application is being deployed, e.g. `prd`
+- `CID_NAME`: the name of the unit that is being deployed or published
+- `CID_RUN`: the ID of the run, also known as the build or the action, depending on the execution environment's nomenclature
+- `CID_RUNNER`: should be `bit` for Bitbucket Pipelines, `gh` for GitHub Actions, `tc` for TeamCity, `az` for Azure DevOps (Server) Pipelines
+- `CID_SCM`: e.g. `git`
 
 [credentials]: https://docs.microsoft.com/en-us/powershell/module/az.accounts/Connect-AzAccount
 

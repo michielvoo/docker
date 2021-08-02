@@ -33,9 +33,9 @@ Describe "Use-CidLogGroup" {
         )
     }
 
-    Context "Azure Pipelines" {
+    Context "Azure DevOps (Server) Pipelines" {
         BeforeAll {
-            $CidContext.Runner = "tf"
+            $CidContext.Runner = "az"
         }
 
         It "Writes open and close tags" {

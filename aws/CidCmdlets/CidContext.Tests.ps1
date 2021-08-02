@@ -32,28 +32,6 @@ Describe "Get-CidContext" {
         $CidContext.Environment | Should -Be "dev"
     }
 
-    Context "Azure Pipelines" {
-        BeforeAll {
-            Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:TF_BUILD" }
-            $Env:BUILD_BINARIESDIRECTORY = "/home/vsts/work/1/b"
-            $Env:BUILD_BUILDID = "27534"
-
-            $CidContext = Get-CidContext
-        }
-
-        It "Returns artifacts path, run, and runner" {
-            $CidContext.ArtifactsPath | Should -Be "/home/vsts/work/1/b"
-            $CidContext.Run | Should -Be "27534"
-            $CidContext.Runner | Should -Be "tf"
-            $CidContext.Deployment | Should -Match "-tf27534$"
-        }
-
-        AfterAll {
-            Remove-Item -Path "Env:BUILD_BINARIESDIRECTORY"
-            Remove-Item -Path "Env:BUILD_BUILDID"
-        }
-    }
-
     Context "Git" {
         BeforeAll {
             Mock git { "https://example.com/application.git" } -ParameterFilter { $Args[0] -eq "config" -and $Args[1] -eq "--get" -and $Args[2] -eq "remote.origin.url" }
@@ -78,39 +56,8 @@ Describe "Get-CidContext" {
         }
     }
 
-    Context "GitHub Actions" {
-        BeforeAll {
-            Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:GITHUB_ACTIONS" }
-            $Env:GITHUB_RUN_ID = "27534"
-
-            $CidContext = Get-CidContext
-        }
-
-        It "Returns artifacts path, run, and runner" {
-            $CidContext.Run | Should -Be "27534"
-            $CidContext.Runner | Should -Be "gh"
-        }
-
-        AfterAll {
-            Remove-Item -Path "Env:GITHUB_RUN_ID"
-        }
-    }
-
-    Context "TeamCity" {
-        BeforeAll {
-            Mock Test-Path { $True } -ParameterFilter { $Path -eq "Env:TEAMCITY_VERSION" }
-
-            $CidContext = Get-CidContext
-        }
-
-        It "Returns artifacts path, run, and runner" {
-            $CidContext.Runner | Should -Be "tc"
-        }
-    }
-
     Context "With environment variables set" {
         BeforeEach {
-            Mock Get-CidContextFromRunner { @{ ArtifactsPath = "ArtifactsPath from runner"; Run = "Run from runner"; Runner = "Runner from runner" } }
             Mock Get-CidContextFromScm { @{ Commit = "Commit from SCM"; Name = "Name from SCM"; Scm = "Scm from SCM" } }
 
             $Env:CID_ARTIFACTS_PATH = "ArtifactsPath from environment variables"

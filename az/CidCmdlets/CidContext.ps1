@@ -1,17 +1,16 @@
 Function Get-CidContext
 {
     $Defaults = @{
-        ArtifactsPath = $Null
+        ArtifactsPath = Join-Path -Path (Get-Location) -ChildPath "artifacts"
         Commit = $Null
         Deployment = $Null
         Environment = "dev"
         Name = $Null
-        Run = $Null
-        Runner = $Null
+        Run = Get-Date -AsUTC -Format FileDateTimeUniversal
+        Runner = "local"
         Scm = $Null
     }
 
-    $Runner = Get-CidContextFromRunner
     $Scm = Get-CidContextFromScm
 
     $Environment = @{
@@ -28,45 +27,12 @@ Function Get-CidContext
     $Result = [Ordered] @{}
 
     $Defaults.Keys | Sort-Object | ForEach-Object {
-        $Result[$_] = $Environment[$_] ?? $Runner[$_] ?? $Scm[$_] ?? $Defaults[$_]
+        $Result[$_] = $Environment[$_] ?? $Scm[$_] ?? $Defaults[$_]
     }
 
     $Result.Deployment = $Result.Deployment ?? "$($Result.Name)-$($Result.Scm)$($Result.Commit)-$($Result.Runner)$($Result.Run)"
 
     Return $Result.AsReadOnly()
-}
-
-Function Get-CidContextFromRunner
-{
-    If (Test-Path -Path "Env:GITHUB_ACTIONS")
-    {
-        Return @{
-            Run = $Env:GITHUB_RUN_ID
-            Runner = "gh"
-        }
-    }
-    ElseIf (Test-Path -Path "Env:TEAMCITY_VERSION")
-    {
-        Return @{
-            Runner = "tc"
-        }
-    }
-    ElseIf (Test-Path -Path "Env:TF_BUILD")
-    {
-        Return @{
-            ArtifactsPath = $Env:BUILD_BINARIESDIRECTORY
-            Run = $Env:BUILD_BUILDID
-            Runner = "tf"
-        }
-    }
-    Else
-    {
-        Return @{
-            ArtifactsPath = Join-Path -Path (Get-Location) -ChildPath "artifacts"
-            Run = Get-Date -AsUTC -Format FileDateTimeUniversal
-            Runner = "local"
-        }
-    }
 }
 
 Function Get-CidContextFromScm
