@@ -1,13 +1,10 @@
 BeforeAll {
     . $PSScriptRoot/Logging.ps1
     $global:CidContext = @{}
+    $CidContext.Runner = "local"
 }
 
 Describe "Use-CidLogGroup" {
-    BeforeAll {
-        $CidContext.Runner = "manual"
-    }
-
     It "Returns the script block's return value" {
         $Result = Use-CidLogGroup -Message "Test" {
             42
@@ -17,6 +14,20 @@ Describe "Use-CidLogGroup" {
 
     It "Writes open and close tags" {
         Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+            ">>> Test >>>"
+            "<<< Test <<<"
+        )
+    }
+
+    It "Takes message from pipeline" {
+        "Test" | Use-CidLogGroup -ScriptBlock {} 6>&1 | Should -Be @(
+            ">>> Test >>>"
+            "<<< Test <<<"
+        )
+    }
+
+    It "Takes script block from pipeline" {
+        {} | Use-CidLogGroup "Test" 6>&1 | Should -Be @(
             ">>> Test >>>"
             "<<< Test <<<"
         )
@@ -59,5 +70,19 @@ Describe "Use-CidLogGroup" {
                 "##teamcity[blockClosed name='Test']"
             )
         }
+    }
+}
+
+Describe "Write-CidLogHeader" {
+    It "Writes header" {
+        Write-CidLogHeader -Message "Test" 6>&1 | Should -Be @(
+            "### Test ###"
+        )
+    }
+
+    It "Takes message from pipeline" {
+        "Test" | Write-CidLogHeader 6>&1 | Should -Be @(
+            "### Test ###"
+        )
     }
 }
