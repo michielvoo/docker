@@ -180,11 +180,11 @@ Function Deploy-CFNStack
                     Throw "Stack with status $Status cannot be deployed"
                 }
 
-                Write-Verbose "Updating existing stack '$StackName' in region $Region..."
+                Write-Verbose "Updating existing stack '$StackName' in region $Region"
             }
             Else
             {
-                Write-Verbose "Creating new stack '$StackName' in region $Region..."
+                Write-Verbose "Creating new stack '$StackName' in region $Region"
             }
 
             $Parameters = @{
@@ -219,12 +219,12 @@ Function Deploy-CFNStack
                 Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region..."
+            Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region"
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region | Out-Null
 
-            Write-Verbose "Deployed stack '$StackName' in region $Region."
+            Write-Verbose "Deployed stack '$StackName' in region $Region"
         }
         Catch
         {
