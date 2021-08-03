@@ -201,7 +201,7 @@ Function Deploy-CFNStack
                 $Parameters.Add($Name, $Value)
             }
 
-            New-CFNChangeSet @Parameters
+            New-CFNChangeSet @Parameters | Out-Null
 
             $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             While ($ChangeSet.Status -eq "CREATE_PENDING" -or $ChangeSet.Status -eq "CREATE_IN_PROGRESS")
@@ -222,7 +222,9 @@ Function Deploy-CFNStack
             Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region..."
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
-            Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region
+            Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region | Out-Null
+
+            Write-Verbose "Deployed stack '$StackName' in region $Region."
         }
         Catch
         {
