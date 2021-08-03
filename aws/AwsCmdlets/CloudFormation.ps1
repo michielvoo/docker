@@ -117,8 +117,12 @@ Function Deploy-CFNStack
         is used.
 
     .PARAMETER ChangeSetName
-        The name of the change set used to deploy the stack. By default $CidContext.Deployment 
-        is used.
+        The name of the change set used to deploy the stack. By default 
+        $CidContext.Name is used.
+
+    .PARAMETER Region
+        The system name of an AWS region or an AWSRegion instance. By default 
+        $StoredAWSRegion is used.
 
     .PARAMETER Timeout
         The amount of time in seconds to wait for deployment to complete.
@@ -137,7 +141,10 @@ Function Deploy-CFNStack
         [string] $StackName = $CidContext.Name,
 
         [Parameter()]
-        [string] $ChangeSetName = $CidContext.Deployment,
+        [string] $ChangeSetName = $CidContext.Name,
+
+        [Parameter()]
+        [string] $Region = $StoredAWSRegion,
 
         [Parameter()]
         [int] $Timeout = 900,
@@ -155,9 +162,9 @@ Function Deploy-CFNStack
 
             $ChangeSetType = "CREATE"
 
-            If (Test-CFNStack -StackName $StackName)
+            If (Test-CFNStack -StackName $StackName -Region $Region)
             {
-                $Stack = Get-CFNStack -StackName $StackName
+                $Stack = Get-CFNStack -StackName $StackName -Region $Region
                 $Status = $Stack.StackStatus
 
                 If ($Status -eq "REVIEW_IN_PROGRESS")
@@ -172,11 +179,18 @@ Function Deploy-CFNStack
                 {
                     Throw "Stack with status $Status cannot be deployed"
                 }
+
+                Write-Verbose "Updating existing stack '$StackName' in region $Region..."
+            }
+            Else
+            {
+                Write-Verbose "Creating new stack '$StackName' in region $Region..."
             }
 
             $Parameters = @{
                 ChangeSetName = $ChangeSetName
                 ChangeSetType = $ChangeSetType
+                Region = $Region
                 StackName = $StackName
             }
             For ($i = 0; $i -lt $Remaining.Count; $i += 2)
@@ -189,10 +203,10 @@ Function Deploy-CFNStack
 
             New-CFNChangeSet @Parameters
 
-            $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
+            $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             While ($ChangeSet.Status -eq "CREATE_PENDING" -or $ChangeSet.Status -eq "CREATE_IN_PROGRESS")
             {
-                $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
+                $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             }
 
             If ($ChangeSet.Status -ne "CREATE_COMPLETE")
@@ -205,8 +219,10 @@ Function Deploy-CFNStack
                 Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName
-            Wait-CFNStack -StackName $StackName -Timeout $Timeout
+            Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region..."
+
+            Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
+            Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region
         }
         Catch
         {
