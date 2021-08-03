@@ -9,7 +9,7 @@ Describe "Get-CidContext" {
             $LastExitCode = 1
         }
 
-        $CidContext = Get-CidContext
+        Set-Variable -Name "CidContext" -Value (Get-CidContext)
     }
 
     It "Returns artifacts path, run, and runner" {
@@ -78,7 +78,7 @@ Describe "Get-CidContext" {
         BeforeEach {
             Mock git { Set-Variable -Scope "global" -Name "LastExitCode" -Value 0 } -ParameterFilter { $Args.Count -eq 1 -and $Args[0] -eq "rev-parse" }
 
-            $CidContext = Get-CidContext
+            Set-Variable -Name "CidContext" -Value (Get-CidContext)
         }
 
         It "Returns commit, name, and SCM" {
@@ -90,6 +90,7 @@ Describe "Get-CidContext" {
 
         AfterEach {
             Remove-Variable -Scope "global" -Name "LastExitCode"
+            Remove-Variable -Name "CidContext"
         }
     }
 
@@ -157,7 +158,7 @@ Describe "Get-CidContext" {
             $Env:CID_RUNNER = "Runner from environment variables"
             $Env:CID_SCM = "Scm from environment variables"
 
-            $CidContext = Get-CidContext
+            Set-Variable -Name "CidContext" -Value (Get-CidContext)
         }
 
         It "Return artifacts path, commit, deployment, environment, name, run, runner, and scm from environment variables" {
@@ -180,6 +181,8 @@ Describe "Get-CidContext" {
             Remove-Item -Path "Env:CID_RUN"
             Remove-Item -Path "Env:CID_RUNNER"
             Remove-Item -Path "Env:CID_SCM"
+
+            Remove-Variable -Name "CidContext"
         }
     }
 }
