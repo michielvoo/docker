@@ -178,6 +178,20 @@ Describe "Deploy-CFNStack" {
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $Parameter -eq "Value" }
     }
 
+    It "Returns if change set has no changes" {
+        $ChangeSet = @{
+            Changes = @()
+            Status = "FAILED"
+        }
+
+        Mock Get-CFNChangeSet { $ChangeSet } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
+        Mock Start-CFNChangeSet {}
+
+        Deploy-CFNStack @Parameters
+
+        Should -Not -Invoke -CommandName Start-CFNChangeSet
+    }
+
     It "Terminates if change set status becomes an unsupported status" {
         $ChangeSet = @{
             Status = "CREATE_PENDING"
@@ -230,10 +244,10 @@ Describe "Deploy-CFNStack" {
         Should -Invoke -CommandName Start-CFNChangeSet -ParameterFilter { $StackName -eq "Stack" -and $ChangeSetName -eq "ChangeSet" -and $Region -eq "eu-central-1" }
     }
 
-    It "Waits for and returns the stack" {
+    It "Waits for the stack" {
         Mock Wait-CFNStack { "stack" }
 
-        Deploy-CFNStack @Parameters -Timeout 30 | Should -Be "stack"
+        Deploy-CFNStack @Parameters -Timeout 30
 
         Should -Invoke -CommandName Wait-CFNStack -ParameterFilter { $StackName -eq "Stack" -and $Region -eq "eu-central-1" -and $Timeout -eq 30 }
     }

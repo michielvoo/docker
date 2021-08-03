@@ -209,7 +209,13 @@ Function Deploy-CFNStack
                 $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             }
 
-            If ($ChangeSet.Status -ne "CREATE_COMPLETE")
+            If ($ChangeSet.Status -eq "FAILED" -and $ChangeSet.Changes.Count -eq 0)
+            {
+                Write-Verbose "Deployed stack '$StackName' in region $Region with no changes"
+
+                Return
+            }
+            ElseIf ($ChangeSet.Status -ne "CREATE_COMPLETE")
             {
                 Throw "Change set with status $($ChangeSet.Status) cannot be started"
             }
