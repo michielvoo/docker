@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": 
+    [
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "pushd \"${workspaceFolder}/${input:directory}\" && ./test.sh && popd",
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "pushd \"${workspaceFolder}/${input:directory}\" && docker build . --tag $(basename $PWD) && popd",
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ],
+    "inputs":
+    [
+        {
+            "id": "directory",
+            "type": "pickString",
+            "description": "Choose a directory",
+            "options": ["aws", "az", "hugo", "pester"]
+        }
+    ]
+}
