@@ -94,7 +94,7 @@ Function Get-CFNStackName
     )
 
     $Result = $Name -replace "[._]","-"
-    $Result = $Result -replace "[^A-Za-z-]",""
+    $Result = $Result -replace "[^0-9A-Za-z-]",""
     $Result = $Result -replace "-+","-"
     $Result = $Result.Substring(0, [System.Math]::Min($Result.Length, 128))
 

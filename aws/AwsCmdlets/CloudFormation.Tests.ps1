@@ -64,7 +64,7 @@ Describe "Get-CFNChangeSetName" {
     }
 
     It "Removes invalid characters" {
-        Get-CFNStackName -Name "some/example" | Should -Be "someexample"
+        Get-CFNStackName -Name "some/example/123" | Should -Be "someexample123"
     }
 
     It "Limits length" {
@@ -82,7 +82,7 @@ Describe "Get-CFNStackName" {
     }
 
     It "Removes invalid characters" {
-        Get-CFNStackName -Name "some/example" | Should -Be "someexample"
+        Get-CFNStackName -Name "some/example/123" | Should -Be "someexample123"
     }
 
     It "Limits length" {
