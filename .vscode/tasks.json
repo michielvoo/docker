@@ -15,6 +15,18 @@
             "command": "pushd \"${workspaceFolder}/${input:directory}\" && docker build . --tag $(basename $PWD) && popd",
             "problemMatcher": [],
             "group": "build"
+        },
+        {
+            "label": "Publish",
+            "type": "shell",
+            "command": "tag=${input:directory}/${input:tag} && git tag $tag && git push origin $tag",
+            "problemMatcher": [],
+        },
+        {
+            "label": "Republish",
+            "type": "shell",
+            "command": "tag=$(git describe --tags --match '${input:directory}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag",
+            "problemMatcher": [],
         }
     ],
     "inputs":
@@ -24,6 +36,11 @@
             "type": "pickString",
             "description": "Choose a directory",
             "options": ["aws", "az", "hugo", "pester"]
+        },
+        {
+            "id": "tag",
+            "type": "promptString",
+            "description": "Set a tag"
         }
     ]
 }
