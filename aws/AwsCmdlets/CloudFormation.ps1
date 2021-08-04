@@ -141,7 +141,7 @@ Function Deploy-CFNStack
         [string] $StackName = $CidContext.Name,
 
         [Parameter()]
-        [string] $ChangeSetName = $CidContext.Name,
+        [string] $ChangeSetName = "$($CidContext.Name)-$($CidContext.Run)",
 
         [Parameter()]
         [string] $Region = $StoredAWSRegion,
@@ -200,6 +200,8 @@ Function Deploy-CFNStack
 
                 $Parameters.Add($Name, $Value)
             }
+
+            Write-Verbose "Creating new change set '$ChangeSetName' for stack '$StackName' in region '$Region'"
 
             New-CFNChangeSet @Parameters | Out-Null
 

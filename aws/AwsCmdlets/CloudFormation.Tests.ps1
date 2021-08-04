@@ -142,11 +142,12 @@ Describe "Deploy-CFNStack" {
     It "Creates change set with stack name and change set name from CI/CD context" {
         $global:CidContext = @{
             Name = "Name"
+            Run = "12"
         }
 
         Deploy-CFNStack
 
-        Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Name" -and $ChangeSetName -eq "Name" }
+        Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $StackName -eq "Name" -and $ChangeSetName -eq "Name-12" }
     }
 
     It "Ensures stack name and change set name are valid" {
