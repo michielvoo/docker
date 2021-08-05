@@ -1,11 +1,21 @@
 {
     "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "powershell.exe"
+            }
+        }
+    },
     "tasks": 
     [
         {
             "label": "Test",
             "type": "shell",
             "command": "pushd \"${workspaceFolder}/${input:directory}\" && ./test.sh && popd",
+            "windows": {
+                "command": "Push-Location \"${workspaceFolder}/${input:directory}\"; ./test.ps1; Pop-Location"
+            },
             "problemMatcher": [],
             "group": "test"
         },
@@ -13,6 +23,9 @@
             "label": "Build",
             "type": "shell",
             "command": "pushd \"${workspaceFolder}/${input:directory}\" && docker build . --tag $(basename $PWD) && popd",
+            "windows": {
+                "command": "Push-Location \"${workspaceFolder}/${input:directory}\"; & docker build . --tag $(Split-Path $PWD -Leaf); Pop-Location"
+            },
             "problemMatcher": [],
             "group": "build"
         },
