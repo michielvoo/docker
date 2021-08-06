@@ -1,31 +1,50 @@
 {
     "version": "2.0.0",
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "powershell.exe"
+            }
+        }
+    },
     "tasks": 
     [
         {
             "label": "Test",
             "type": "shell",
-            "command": "pushd \"${workspaceFolder}/${input:directory}\" && ./test.sh && popd",
+            "command": "pushd '${workspaceFolder}/${input:directory}' && ./test.sh && popd",
+            "windows": {
+                "command": "Push-Location '${workspaceFolder}/${input:directory}'; ./test.ps1; Pop-Location"
+            },
             "problemMatcher": [],
             "group": "test"
         },
         {
             "label": "Build",
             "type": "shell",
-            "command": "pushd \"${workspaceFolder}/${input:directory}\" && docker build . --tag $(basename $PWD) && popd",
+            "command": "pushd '${workspaceFolder}/${input:directory}' && docker build . --tag $(basename $PWD) && popd",
+            "windows": {
+                "command": "Push-Location '${workspaceFolder}/${input:directory}'; & docker build . --tag $(Split-Path $PWD -Leaf); Pop-Location"
+            },
             "problemMatcher": [],
             "group": "build"
         },
         {
             "label": "Publish",
             "type": "shell",
-            "command": "tag=${input:directory}/${input:tag} && git tag $tag && git push origin $tag",
+            "command": "tag='${input:directory}/${input:tag}' && git tag \"$tag\" && git push origin \"$tag\"",
+            "windows": {
+                "command": "Set-Variable -Name 'Tag' -Value '${input:directory}/${input:tag}'; git tag \"$Tag\"; git push origin \"$Tag\""
+            },
             "problemMatcher": [],
         },
         {
             "label": "Republish",
             "type": "shell",
             "command": "tag=$(git describe --tags --match '${input:directory}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag && registry=$(basename $(dirname $(git config --get remote.origin.url))) && docker image rm --force $registry/$(echo $tag | tr '/' ':')",
+            "windows": {
+                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:directory}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\""
+            },
             "problemMatcher": [],
         }
     ],

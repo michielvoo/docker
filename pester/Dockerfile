@@ -17,4 +17,4 @@ RUN chmod +x /usr/bin/docker-entrypoint.ps1
 
 WORKDIR /root/work
 
-ENTRYPOINT ["/usr/bin/docker-entrypoint.ps1"]
+ENTRYPOINT ["pwsh", "-File", "/usr/bin/docker-entrypoint.ps1"]
