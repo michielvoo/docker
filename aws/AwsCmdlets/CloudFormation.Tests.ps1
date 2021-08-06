@@ -111,7 +111,7 @@ Describe "Deploy-CFNStack" {
         Function Get-CFNStack { param($Region, $StackName) }
         Function Get-CFNStackName { param($Name) }
         Function New-CFNChangeSet { param($ChangeSetName, $ChangeSetType, $Region, $StackName, $Parameter) }
-        Function Remove-CFNChangeSet { param($ChangeSetName, $Region, $StackName) }
+        Function Remove-CFNChangeSet { param($ChangeSetName, [Switch] $Force, $Region, $StackName) }
         Function Start-CFNChangeSet { param($ChangeSetName, $Region, $StackName) }
         Function Test-CFNStack { param($StackName, $Region) }
         Function Wait-CFNStack { param($Region, $StackName, $Timeout) }
@@ -194,7 +194,7 @@ Describe "Deploy-CFNStack" {
 
         Deploy-CFNStack @Parameters
 
-        Should -Invoke Remove-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
+        Should -Invoke Remove-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $Force -eq $True -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
         Should -Not -Invoke -CommandName Start-CFNChangeSet
     }
 
