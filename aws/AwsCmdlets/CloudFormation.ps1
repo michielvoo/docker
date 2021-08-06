@@ -228,7 +228,7 @@ Function Deploy-CFNStack
                 Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region"
+            Write-Verbose "Starting change set '$ChangeSetName' with $($ChangeSet.Changes.Count) changes for stack '$StackName' in region $Region"
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region | Out-Null
