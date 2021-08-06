@@ -45,11 +45,13 @@ Function Use-CidLogGroup
     {
         Try
         {
-            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Open -ArgumentList $Message)
+            $Tags = $Format[$CidContext.Runner] ?? $Format["local"]
+
+            Write-Host (Invoke-Command -ScriptBlock $Tags.Open -ArgumentList $Message)
 
             & $ScriptBlock
 
-            Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Close -ArgumentList $Message)
+            Write-Host (Invoke-Command -ScriptBlock $Tags.Close -ArgumentList $Message)
         }
         Catch
         {
@@ -67,6 +69,8 @@ Function Write-CidLogHeader
 
     Process
     {
-        Write-Host (Invoke-Command -ScriptBlock $Format[$CidContext.Runner].Header -ArgumentList $Message)
+        $Tags = $Format[$CidContext.Runner] ?? $Format["local"]
+
+        Write-Host (Invoke-Command -ScriptBlock $Tags.Header -ArgumentList $Message)
     }
 }

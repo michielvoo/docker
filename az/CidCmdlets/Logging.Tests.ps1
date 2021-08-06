@@ -97,6 +97,19 @@ Describe "Use-CidLogGroup" {
             )
         }
     }
+
+    Context "Unknown" {
+        BeforeAll {
+            $CidContext.Runner = "unknown"
+        }
+
+        It "Writes open and close tags" {
+            Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
+                ">>> Test >>>"
+                "<<< Test <<<"
+            )
+        }
+    }
 }
 
 Describe "Write-CidLogHeader" {
