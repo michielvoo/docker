@@ -213,6 +213,7 @@ Function Deploy-CFNStack
 
             If ($ChangeSet.Status -eq "FAILED" -and $ChangeSet.Changes.Count -eq 0)
             {
+                Remove-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
                 Write-Verbose "Deployed stack '$StackName' in region $Region with no changes"
 
                 Return

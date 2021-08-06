@@ -111,6 +111,7 @@ Describe "Deploy-CFNStack" {
         Function Get-CFNStack { param($Region, $StackName) }
         Function Get-CFNStackName { param($Name) }
         Function New-CFNChangeSet { param($ChangeSetName, $ChangeSetType, $Region, $StackName, $Parameter) }
+        Function Remove-CFNChangeSet { param($ChangeSetName, $Region, $StackName) }
         Function Start-CFNChangeSet { param($ChangeSetName, $Region, $StackName) }
         Function Test-CFNStack { param($StackName, $Region) }
         Function Wait-CFNStack { param($Region, $StackName, $Timeout) }
@@ -160,11 +161,13 @@ Describe "Deploy-CFNStack" {
     }
 
     It "Creates change set in default region" {
-        $StoredAWSRegion = "us-east-1"
+        Set-Variable -Name "StoredAWSRegion" -Value "us-east-1"
 
         Deploy-CFNStack
 
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $Region -eq "us-east-1" }
+
+        Remove-Variable -Name "StoredAWSRegion"
     }
 
     It "Creates change set in region" {
@@ -186,10 +189,12 @@ Describe "Deploy-CFNStack" {
         }
 
         Mock Get-CFNChangeSet { $ChangeSet } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
+        Mock Remove-CFNChangeSet {}
         Mock Start-CFNChangeSet {}
 
         Deploy-CFNStack @Parameters
 
+        Should -Invoke Remove-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
         Should -Not -Invoke -CommandName Start-CFNChangeSet
     }
 
