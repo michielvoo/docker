@@ -43,7 +43,7 @@
             "type": "shell",
             "command": "tag=$(git describe --tags --match '${input:directory}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag && registry=$(basename $(dirname $(git config --get remote.origin.url))) && docker image rm --force $registry/$(echo $tag | tr '/' ':')",
             "windows": {
-                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:directory}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\""
+                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:directory}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\"; Set-Variable -Name \"registry\" -Value $(Split-Path -Leaf $(Split-Path $(git config --get remote.origin.url))); docker image rm --force \"$Registry/$($Tag.Replace('/', ':'))\""
             },
             "problemMatcher": [],
         }
