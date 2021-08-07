@@ -171,7 +171,7 @@ Function Deploy-CFNStack
                 {
                     $ChangeSetType = "CREATE"
                 }
-                ElseIf ($Status -eq "CREATE_COMPLETE" -or $Status -eq "UPDATE_COMPLETE")
+                ElseIf ($Status -eq "CREATE_COMPLETE" -or $Status -eq "UPDATE_COMPLETE" -or $Status -eq "UPDATE_ROLLBACK_COMPLETE")
                 {
                     $ChangeSetType = "UPDATE"
                 }
