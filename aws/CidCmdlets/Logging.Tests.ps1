@@ -66,7 +66,7 @@ Describe "Use-CidLogGroup" {
 
         It "Writes open and close tags" {
             Use-CidLogGroup -Message "Test" {} 6>&1 | Should -Be @(
-                "::group::{Test}"
+                "::group::Test"
                 "::endgroup::"
             )
         }

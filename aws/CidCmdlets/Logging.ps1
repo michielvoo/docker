@@ -10,7 +10,7 @@ $Format = @{
         Header = { "{0}" -f $Args[0] }
     }
     gh = @{ # GitHub Actions workflow commands
-        Open = { "::group::{{{0}}}" -f $Args[0] }
+        Open = { "::group::{0}" -f $Args[0] }
         Close = { "::endgroup::" }
         Header = { "### {0} ###" -f $Args[0] }
     }
