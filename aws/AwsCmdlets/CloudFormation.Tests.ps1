@@ -182,22 +182,6 @@ Describe "Deploy-CFNStack" {
         Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $Parameter -eq "Value" }
     }
 
-    It "Returns if change set has no changes" {
-        $ChangeSet = @{
-            Changes = @()
-            Status = "FAILED"
-        }
-
-        Mock Get-CFNChangeSet { $ChangeSet } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
-        Mock Remove-CFNChangeSet {}
-        Mock Start-CFNChangeSet {}
-
-        Deploy-CFNStack @Parameters
-
-        Should -Invoke Remove-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $Force -eq $True -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
-        Should -Not -Invoke -CommandName Start-CFNChangeSet
-    }
-
     It "Terminates if change set status becomes an unsupported status" {
         $ChangeSet = @{
             Status = "CREATE_PENDING"
@@ -258,6 +242,14 @@ Describe "Deploy-CFNStack" {
         Should -Invoke -CommandName Wait-CFNStack -ParameterFilter { $StackName -eq "Stack" -and $Region -eq "eu-central-1" -and $Timeout -eq 30 }
     }
 
+    It "Returns the stack" {
+        Mock Wait-CFNStack { "stack" }
+
+        $Result = Deploy-CFNStack @Parameters -Timeout 30
+
+        $Result | Should -Be "stack"
+    }
+
     Context "When stack exist" {
         BeforeAll {
             $Stack = @{}
@@ -290,10 +282,37 @@ Describe "Deploy-CFNStack" {
             Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "UPDATE" }
         }
 
+        It "Creates change set of type UPDATE if stack status is UPDATE_ROLLBACK_COMPLETE" {
+            $Stack.StackStatus = "UPDATE_ROLLBACK_COMPLETE"
+
+            Deploy-CFNStack @Parameters
+
+            Should -Invoke -CommandName New-CFNChangeSet -ParameterFilter { $ChangeSetType -eq "UPDATE" }
+        }
+
         It "Terminates if stack status is not supported" {
             $Stack.StackStatus = "SOME_UNSUPPORTED_STATUS"
 
             { Deploy-CFNStack @Parameters } | Should -Throw
+        }
+
+        It "Returns stack if change set has no changes" {
+            $Stack.StackStatus = "CREATE_COMPLETE"
+
+            $ChangeSet = @{
+                Changes = @()
+                Status = "FAILED"
+            }
+
+            Mock Get-CFNChangeSet { $ChangeSet } -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
+            Mock Remove-CFNChangeSet {}
+            Mock Start-CFNChangeSet {}
+    
+            $Result = Deploy-CFNStack @Parameters
+    
+            Should -Invoke Remove-CFNChangeSet -ParameterFilter { $ChangeSetName -eq "ChangeSet" -and $Force -eq $True -and $StackName -eq "Stack" -and $Region -eq "eu-central-1" }
+            Should -Not -Invoke -CommandName Start-CFNChangeSet
+            $Result | Should -Be $Stack
         }
     }
 }

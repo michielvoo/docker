@@ -214,9 +214,9 @@ Function Deploy-CFNStack
             If ($ChangeSet.Status -eq "FAILED" -and $ChangeSet.Changes.Count -eq 0)
             {
                 Remove-CFNChangeSet -ChangeSetName $ChangeSetName -Force -Region $Region -StackName $StackName
-                Write-Verbose "Deployed stack '$StackName' in region $Region with no changes"
+                Write-Verbose "Deployed stack '$StackName' in region $Region with 0 changes"
 
-                Return
+                Return $Stack
             }
             ElseIf ($ChangeSet.Status -ne "CREATE_COMPLETE")
             {
@@ -228,12 +228,14 @@ Function Deploy-CFNStack
                 Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Write-Verbose "Starting change set '$ChangeSetName' with $($ChangeSet.Changes.Count) changes for stack '$StackName' in region $Region"
+            Write-Verbose "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region"
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
-            Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region | Out-Null
+            $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region
 
-            Write-Verbose "Deployed stack '$StackName' in region $Region"
+            Write-Verbose "Deployed stack '$StackName' in region $Region with $($ChangeSet.Changes.Count) change(s)"
+
+            Return $Stack
         }
         Catch
         {
