@@ -7,6 +7,7 @@ The following PowerShell modules are installed:
 - [AWS.Tools.CloudFormation](https://www.powershellgallery.com/packages/AWS.Tools.CloudFormation)
 - [AWS.Tools.CloudFront](https://www.powershellgallery.com/packages/AWS.Tools.CloudFront)
 - [AWS.Tools.Installer](https://www.powershellgallery.com/packages/AWS.Tools.Installer)
+- [AWS.Tools.S3](https://www.powershellgallery.com/packages/AWS.Tools.S3)
 - [AwsCmdlets](AwsCmdlets)
 - [CidCmdlets](CidCmdlets)
 

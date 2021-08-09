@@ -1,6 +1,7 @@
 Import-Module AWS.Tools.CloudFormation
 Import-Module AWS.Tools.CloudFront
 Import-Module AWS.Tools.Installer
+Import-Module AWS.Tools.S3
 Import-Module AwsCmdlets
 Import-Module CidCmdlets
 

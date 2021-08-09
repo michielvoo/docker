@@ -12,7 +12,8 @@ RUN apk update --no-cache \
     && Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
     && Install-Module -Confirm:$False -Scope AllUsers -Name AWS.Tools.Installer -RequiredVersion 1.0.2.1 \
     && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFormation -RequiredVersion 4.1.14.0 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.14.0
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.14.0 \
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.S3 -RequiredVersion 4.1.14.0
 
 COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
