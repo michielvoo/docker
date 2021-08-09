@@ -13,7 +13,7 @@ Describe "ConvertTo-CFNParameters" {
         } -ParameterFilter { $TypeName -eq "Amazon.CloudFormation.Model.Parameter" }
     }
 
-    It "Converts a JSON array to an array of CloudFormation parameters" {
+    It "Converts JSON to CloudFormation parameters" {
         $Json = ConvertTo-Json -InputObject @(
             @{ ParameterKey = "A"; ParameterValue = "12" }
             @{ ParameterKey = "B"; ParameterValue = "42" }
