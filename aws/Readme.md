@@ -7,6 +7,7 @@ The following PowerShell modules are installed:
 - [AWS.Tools.CloudFormation](https://www.powershellgallery.com/packages/AWS.Tools.CloudFormation)
 - [AWS.Tools.CloudFront](https://www.powershellgallery.com/packages/AWS.Tools.CloudFront)
 - [AWS.Tools.Installer](https://www.powershellgallery.com/packages/AWS.Tools.Installer)
+- [AWS.Tools.Route53](https://www.powershellgallery.com/packages/AWS.Tools.Route53)
 - [AWS.Tools.S3](https://www.powershellgallery.com/packages/AWS.Tools.S3)
 - [AwsCmdlets](AwsCmdlets)
 - [CidCmdlets](CidCmdlets)
@@ -94,5 +95,6 @@ After building the local Docker image run it to check the AWS Tools for
 PowerShell version:
 
 ```
+docker run --rm -it aws -Command "Get-Module"
 docker run --rm -it aws -Command "Get-AWSPowerShellVersion"
 ```
