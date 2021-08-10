@@ -17,18 +17,33 @@ Function ConvertTo-CFNParameters
     #>
 
     Param(
-        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [string] $Json
+        [Parameter(ParameterSetName="JSON", Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [string] $Json,
+
+        [Parameter(ParameterSetName="Outputs", Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Amazon.CloudFormation.Model.Output[]] $Outputs
     )
 
     Process
     {
         Try
         {
-            Return ConvertFrom-Json $Json | ForEach-Object {
-                New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
-                    ParameterKey = $_.ParameterKey
-                    ParameterValue = $_.ParameterValue
+            If ($Json)
+            {
+                Return ConvertFrom-Json $Json | ForEach-Object {
+                    New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
+                        ParameterKey = $_.ParameterKey
+                        ParameterValue = $_.ParameterValue
+                    }
+                }
+            }
+            Else
+            {
+                Return $Outputs | ForEach-Object {
+                    New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
+                        ParameterKey = $_.OutputKey
+                        ParameterValue = $_.OutputValue
+                    }
                 }
             }
         }
@@ -84,6 +99,34 @@ Function Get-CFNChangeSetName
     )
 
     Return Get-CFNStackName -Name $Name
+}
+
+Function Get-CFNOutputs
+{
+    <#
+    .SYNOPSIS
+        Get the outputs of a stack as a hashtable.
+
+    .PARAMETER Stack
+        The stack.
+    #>
+
+    param(
+        [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
+        [Amazon.CloudFormation.Model.Stack] $Stack
+    )
+
+    Process
+    {
+        $Result = @{}
+
+        ForEach ($Output in $Stack.Outputs)
+        {
+            $Result[$Output.OutputKey] = $Output.OutputValue
+        }
+
+        Return $Result
+    }
 }
 
 Function Get-CFNStackName

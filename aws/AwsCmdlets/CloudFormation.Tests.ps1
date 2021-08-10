@@ -4,6 +4,18 @@ BeforeAll {
 
 Describe "ConvertTo-CFNParameters" {
     BeforeAll {
+        $OutputDefinition = @"
+            namespace Amazon.CloudFormation.Model
+            {
+                public class Output {
+                    public string OutputKey { get; set; }
+                    public string OutputValue { get; set; }
+                }
+            }
+"@
+
+        Add-Type -TypeDefinition $OutputDefinition
+
         Mock New-Object {
             $Object = @{}
             $Property.GetEnumerator() | ForEach-Object {
@@ -13,18 +25,42 @@ Describe "ConvertTo-CFNParameters" {
         } -ParameterFilter { $TypeName -eq "Amazon.CloudFormation.Model.Parameter" }
     }
 
-    It "Converts JSON to CloudFormation parameters" {
-        $Json = ConvertTo-Json -InputObject @(
-            @{ ParameterKey = "A"; ParameterValue = "12" }
-            @{ ParameterKey = "B"; ParameterValue = "42" }
-        )
+    Context "JSON" {
+        It "Converts JSON to CloudFormation parameters" {
+            $Json = ConvertTo-Json -InputObject @(
+                @{ ParameterKey = "A"; ParameterValue = "12" }
+                @{ ParameterKey = "B"; ParameterValue = "42" }
+            )
 
-        $Parameters = ConvertTo-CFNParameters -Json $Json
+            $Parameters = ConvertTo-CFNParameters -Json $Json
 
-        $Parameters[0].ParameterKey | Should -Be "A"
-        $Parameters[0].ParameterValue | Should -Be "12"
-        $Parameters[1].ParameterKey | Should -Be "B"
-        $Parameters[1].ParameterValue | Should -Be "42"
+            $Parameters[0].ParameterKey | Should -Be "A"
+            $Parameters[0].ParameterValue | Should -Be "12"
+            $Parameters[1].ParameterKey | Should -Be "B"
+            $Parameters[1].ParameterValue | Should -Be "42"
+        }
+    }
+
+    Context "Outputs" {
+        It "Converts CloudFormation stack outputs to CloudFormation parameters" {
+            $Outputs = @(
+                New-Object -TypeName "Amazon.CloudFormation.Model.Output" -Property @{
+                    OutputKey = "A"
+                    OutputValue = "12"
+                }
+                New-Object -TypeName "Amazon.CloudFormation.Model.Output" -Property @{
+                    OutputKey = "B"
+                    OutputValue = "42"
+                }
+            )
+
+            $Parameters = ConvertTo-CFNParameters -Outputs $Outputs
+
+            $Parameters[0].ParameterKey | Should -Be "A"
+            $Parameters[0].ParameterValue | Should -Be "12"
+            $Parameters[1].ParameterKey | Should -Be "B"
+            $Parameters[1].ParameterValue | Should -Be "42"
+        }
     }
 }
 
@@ -69,6 +105,34 @@ Describe "Get-CFNChangeSetName" {
 
     It "Limits length" {
         (Get-CFNStackName -Name ("test" * 40)).Length | Should -Be 128
+    }
+}
+
+Describe "Get-CFNOutputs" {
+    BeforeAll {
+        $StackDefinition = @"
+            namespace Amazon.CloudFormation.Model
+            {
+                public class Stack {
+                    public object[] Outputs { get; set; }
+                }
+            }
+"@
+
+        Add-Type -TypeDefinition $StackDefinition
+    }
+
+    It "Gets the outputs as a hashtable" {
+        $Stack = New-Object -TypeName "Amazon.CloudFormation.Model.Stack"
+        $Stack.Outputs = @(
+            @{ OutputKey = "A"; OutputValue = "12" }
+            @{ OutputKey = "B"; OutputValue = "42" }
+        )
+
+        $Result = Get-CFNOutputs -Stack $Stack
+
+        $Result.A | Should -Be "12"
+        $Result.B | Should -Be "42"
     }
 }
 
