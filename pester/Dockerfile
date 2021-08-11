@@ -8,9 +8,9 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 SHELL ["pwsh", "-Command"]
 
 RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
-    && Install-Module -Confirm:$False -Scope AllUsers -Name Pester -RequiredVersion 5.2.2 \
-    && New-Item -Force -ItemType File -Path $Profile \
-    && Write-Output "Import-Module Pester" | Out-File -Append -FilePath $Profile
+    && Install-Module -Confirm:$False -Scope AllUsers -Name Pester -RequiredVersion 5.2.2
+
+COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
 COPY docker-entrypoint.ps1 /usr/bin
 RUN chmod +x /usr/bin/docker-entrypoint.ps1

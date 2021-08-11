@@ -42,3 +42,7 @@ docker run --rm -it --entrypoint pwsh pester -Version
 Find the latest version of the PowerShell modules that are installed and update 
 the `-RequiredVersion` argument in the corresponding `Install-Module` commands 
 in the Dockerfile accordingly.
+
+```
+docker run --rm -it --entrypoint pwsh pester -Command "Get-Module"
+```
