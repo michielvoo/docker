@@ -17,7 +17,7 @@ Function ConvertTo-CFNParameters
         Specifies the stack outputs.
 
     .PARAMETER Map
-        The keys of this hashtable selects output keys by name and the values 
+        The keys of this hashtable select output keys by name and the values 
         are used as the corresponding parameter keys.
 
     .EXAMPLE
@@ -51,26 +51,23 @@ Function ConvertTo-CFNParameters
             Else
             {
                 Return $Outputs | ForEach-Object {
-                    If ($Map)
-                    {
-                        If ($Map.ContainsKey($_.OutputKey))
-                        {
-                            New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
-                                ParameterKey = $Map[$_.OutputKey]
-                                ParameterValue = $_.OutputValue
-                            }
-                        }
-                        Else
-                        {
-                            Continue
-                        }
-                    }
-                    Else
+                    If (-not $Map)
                     {
                         New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
                             ParameterKey = $_.OutputKey
                             ParameterValue = $_.OutputValue
                         }
+                    }
+                    ElseIf ($Map.ContainsKey($_.OutputKey))
+                    {
+                        New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
+                            ParameterKey = $Map[$_.OutputKey]
+                            ParameterValue = $_.OutputValue
+                        }
+                    }
+                    Else
+                    {
+                        Continue
                     }
                 }
             }
@@ -137,11 +134,18 @@ Function Get-CFNOutputs
 
     .PARAMETER Stack
         The stack.
+
+    .PARAMETER Map
+        The keys of this hashtable select output keys by name and the values 
+        are used as the corresponding hashtable keys.
     #>
 
     param(
         [Parameter(Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [Amazon.CloudFormation.Model.Stack] $Stack
+        [Amazon.CloudFormation.Model.Stack] $Stack,
+
+        [Parameter()]
+        [hashtable] $Map
     )
 
     Process
@@ -150,7 +154,14 @@ Function Get-CFNOutputs
 
         ForEach ($Output in $Stack.Outputs)
         {
-            $Result[$Output.OutputKey] = $Output.OutputValue
+            If (-not $Map)
+            {
+                $Result[$Output.OutputKey] = $Output.OutputValue
+            }
+            ElseIf ($Map.ContainsKey($Output.OutputKey))
+            {
+                $Result[$Map[$Output.OutputKey]] = $Output.OutputValue
+            }
         }
 
         Return $Result
