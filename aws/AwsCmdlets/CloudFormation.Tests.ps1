@@ -61,6 +61,24 @@ Describe "ConvertTo-CFNParameters" {
             $Parameters[1].ParameterKey | Should -Be "B"
             $Parameters[1].ParameterValue | Should -Be "42"
         }
+
+        It "Filters and maps CloudFormation stack outputs to CloudFormation parameters" {
+            $Outputs = @(
+                New-Object -TypeName "Amazon.CloudFormation.Model.Output" -Property @{
+                    OutputKey = "A"
+                    OutputValue = "12"
+                }
+                New-Object -TypeName "Amazon.CloudFormation.Model.Output" -Property @{
+                    OutputKey = "B"
+                    OutputValue = "42"
+                }
+            )
+
+            $Parameters = ConvertTo-CFNParameters -Outputs $Outputs -Map @{ "B" = "A" }
+
+            $Parameters[0].ParameterKey | Should -Be "A"
+            $Parameters[0].ParameterValue | Should -Be "42"
+        }
     }
 }
 

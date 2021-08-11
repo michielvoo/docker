@@ -2,7 +2,8 @@ Function ConvertTo-CFNParameters
 {
     <#
     .SYNOPSIS
-        Convert JSON content to an array of AWS CloudFormation parameters.
+        Convert JSON content or CloudFormation stack outputs to an array of AWS 
+        CloudFormation parameters.
 
     .DESCRIPTION
         The JSON content should contain an array of objects, each object should 
@@ -11,6 +12,13 @@ Function ConvertTo-CFNParameters
 
     .PARAMETER Json
         Specifies the JSON content.
+
+    .PARAMETER Outputs
+        Specifies the stack outputs.
+
+    .PARAMETER Map
+        The keys of this hashtable selects output keys by name and the values 
+        are used as the corresponding parameter keys.
 
     .EXAMPLE
         ConvertTo-CFNParameters -Json (Get-Content -Path "aws/infrastructure.prd.json" -Raw)
@@ -21,7 +29,10 @@ Function ConvertTo-CFNParameters
         [string] $Json,
 
         [Parameter(ParameterSetName="Outputs", Mandatory, ValueFromPipeline, ValueFromPipelineByPropertyName)]
-        [Amazon.CloudFormation.Model.Output[]] $Outputs
+        [Amazon.CloudFormation.Model.Output[]] $Outputs,
+
+        [Parameter(ParameterSetName="Outputs")]
+        [hashtable] $Map
     )
 
     Process
@@ -40,9 +51,26 @@ Function ConvertTo-CFNParameters
             Else
             {
                 Return $Outputs | ForEach-Object {
-                    New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
-                        ParameterKey = $_.OutputKey
-                        ParameterValue = $_.OutputValue
+                    If ($Map)
+                    {
+                        If ($Map.ContainsKey($_.OutputKey))
+                        {
+                            New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
+                                ParameterKey = $Map[$_.OutputKey]
+                                ParameterValue = $_.OutputValue
+                            }
+                        }
+                        Else
+                        {
+                            Continue
+                        }
+                    }
+                    Else
+                    {
+                        New-Object -TypeName "Amazon.CloudFormation.Model.Parameter" -Property @{
+                            ParameterKey = $_.OutputKey
+                            ParameterValue = $_.OutputValue
+                        }
                     }
                 }
             }
