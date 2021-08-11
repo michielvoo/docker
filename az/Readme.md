@@ -88,9 +88,6 @@ module and check its dependencies for updates of the PowerShell modules that
 are installed and update the `-RequiredVersion` argument in the corresponding 
 `Install-Module` commands in the Dockerfile accordingly.
 
-After building the local Docker image run it to check the Azure PowerShell 
-module works:
-
 ```
-docker run --rm -it az -Command "Get-AzEnvironment"
+docker run --rm -it aws -Command "Get-Module"
 ```
