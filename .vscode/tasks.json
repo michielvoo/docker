@@ -54,7 +54,7 @@
             "id": "directory",
             "type": "pickString",
             "description": "Choose a directory",
-            "options": ["aws", "az", "hugo", "pester"]
+            "options": ["aws", "az", "hugo", "pester", "psdoc"]
         },
         {
             "id": "tag",
