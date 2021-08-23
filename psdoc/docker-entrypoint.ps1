@@ -10,8 +10,20 @@ For ($i = 0; $i -lt $Args.Count; $i++)
 
         Import-Module -Name $ModuleName
 
-        Break
+        Continue
+    }
+
+    If ($Arg.ToLower() -eq "-outputfolder")
+    {
+        $OutputFolder = $Args[$i + 1]
+
+        If (Test-Path -Path $OutputFolder)
+        {
+            Remove-Item -Path $OutputFolder -Recurse -Force
+        }
+
+        Continue
     }
 }
 
-New-MarkdownHelp @Args
+New-MarkdownHelp @Args | Out-Null

@@ -14,7 +14,9 @@ This Docker image can be used to generate Markdown documentation for PowerShell
 modules. A directory containing PowerShell modules should be mounted in the 
 working directory of the Docker container. The container executes the 
 `New-MarkdownHelp` cmdlet and passes all command-line arguments to it. The 
-`-Module` argument will be used to import the module.
+`-Module` argument will be used to import the module. To ensure consistent 
+documentation the `-OutputFolder` argument will be used to delete existing 
+documentation before generating new documentation.
 
 ```
 docker run --rm -it -v $PWD:/root/work psdoc -Module "Example" -OutputFolder ./docs -NoMetadata
