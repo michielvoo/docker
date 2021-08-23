@@ -319,7 +319,7 @@ Function Deploy-CFNStack
             Write-Host "Starting change set $ChangeSetName for stack $StackName in region $Region"
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
-            $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region -Verbose
+            $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region
 
             Write-Host "Deployed stack $StackName in region $Region with $($ChangeSet.Changes.Count) change(s)"
 
