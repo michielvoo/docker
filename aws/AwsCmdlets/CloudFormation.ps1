@@ -262,11 +262,11 @@ Function Deploy-CFNStack
                     Throw "Stack with status $Status cannot be deployed"
                 }
 
-                Write-Host "Updating existing stack '$StackName' in region $Region"
+                Write-Host "Updating existing stack $StackName in region $Region"
             }
             Else
             {
-                Write-Host "Creating new stack '$StackName' in region $Region"
+                Write-Host "Creating new stack $StackName in region $Region"
             }
 
             $Parameters = @{
@@ -283,7 +283,7 @@ Function Deploy-CFNStack
                 $Parameters.Add($Name, $Value)
             }
 
-            Write-Host "Creating new change set '$ChangeSetName' for stack '$StackName' in region '$Region'"
+            Write-Host "Creating new change set $ChangeSetName for stack $StackName in region $Region"
 
             New-CFNChangeSet @Parameters | Out-Null
 
@@ -302,7 +302,7 @@ Function Deploy-CFNStack
             If ($ChangeSet.Status -eq "FAILED" -and $ChangeSet.Changes.Count -eq 0)
             {
                 Remove-CFNChangeSet -ChangeSetName $ChangeSetName -Force -Region $Region -StackName $StackName
-                Write-Host "Deployed stack '$StackName' in region $Region with 0 changes"
+                Write-Host "Deployed stack $StackName in region $Region with 0 changes"
 
                 Return $Stack
             }
@@ -316,12 +316,12 @@ Function Deploy-CFNStack
                 Throw "Change set with execution status $($ChangeSet.ExecutionStatus) cannot be started"
             }
 
-            Write-Host "Starting change set '$ChangeSetName' for stack '$StackName' in region $Region"
+            Write-Host "Starting change set $ChangeSetName for stack $StackName in region $Region"
 
             Start-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
-            $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region
+            $Stack = Wait-CFNStack -StackName $StackName -Timeout $Timeout -Region $Region -Verbose
 
-            Write-Host "Deployed stack '$StackName' in region $Region with $($ChangeSet.Changes.Count) change(s)"
+            Write-Host "Deployed stack $StackName in region $Region with $($ChangeSet.Changes.Count) change(s)"
 
             Return $Stack
         }
