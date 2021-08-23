@@ -287,11 +287,15 @@ Function Deploy-CFNStack
 
             New-CFNChangeSet @Parameters | Out-Null
 
-            $Milliseconds = 50
             $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
+            $Milliseconds = 50
             While ($ChangeSet.Status -eq "CREATE_PENDING" -or $ChangeSet.Status -eq "CREATE_IN_PROGRESS")
             {
-                Start-Sleep -Milliseconds [System.Math]::Max(($Milliseconds *= 2), 3000)
+                If ($Milliseconds -lt 3000)
+                {
+                    $Milliseconds *= 2
+                }
+                Start-Sleep -Milliseconds $Milliseconds
                 $ChangeSet = Get-CFNChangeSet -StackName $StackName -ChangeSetName $ChangeSetName -Region $Region
             }
 
