@@ -1,6 +1,6 @@
-# Pester
+# PSDoc
 
-PSDoc, for generating PowerShell documentation
+PowerShell and platyPS, for generating PowerShell documentation
 
 The following PowerShell modules are installed:
 
