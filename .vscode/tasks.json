@@ -10,16 +10,6 @@
     "tasks": 
     [
         {
-            "label": "Test",
-            "type": "shell",
-            "command": "pushd '${workspaceFolder}/${input:directory}' && ./test.sh && popd",
-            "windows": {
-                "command": "Push-Location '${workspaceFolder}/${input:directory}'; ./test.ps1; Pop-Location"
-            },
-            "problemMatcher": [],
-            "group": "test"
-        },
-        {
             "label": "Build",
             "type": "shell",
             "command": "pushd '${workspaceFolder}/${input:directory}' && docker build . --tag $(basename $PWD) && popd",
@@ -28,6 +18,15 @@
             },
             "problemMatcher": [],
             "group": "build"
+        },
+        {
+            "label": "Command",
+            "type": "shell",
+            "command": "pushd '${workspaceFolder}/${input:directory}' && ./cmd.sh ${input:cmd} && popd",
+            "windows": {
+                "command": "Push-Location '${workspaceFolder}/${input:directory}'; ./cmd.ps1 ${input:cmd}; Pop-Location"
+            },
+            "problemMatcher": []
         },
         {
             "label": "Publish",
@@ -50,6 +49,12 @@
     ],
     "inputs":
     [
+        {
+            "id": "cmd",
+            "type": "pickString",
+            "description": "Choose a command",
+            "options": ["docs", "test", "version"]
+        },
         {
             "id": "directory",
             "type": "pickString",
