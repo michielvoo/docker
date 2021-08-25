@@ -2,6 +2,10 @@
 
 pwsh, for running a PowerShell command or script
 
+The following PowerShell modules are installed:
+
+- [PSScriptAnalyzer](https://www.powershellgallery.com/packages/PSScriptAnalyzer)
+
 ## Usage
 
 (All example commands assume a 'local' build of the Docker image is available.)
@@ -29,4 +33,14 @@ After building the local Docker image run it to check the PowerShell version:
 
 ```
 docker run --rm -it pwsh -Version
+```
+
+### How to: update PowerShell modules
+
+Find the latest version of the PowerShell modules that are installed and update 
+the `-RequiredVersion` argument in the corresponding `Install-Module` commands 
+in the Dockerfile accordingly.
+
+```
+docker run --rm -it pwsh -Command "Get-Module"
 ```

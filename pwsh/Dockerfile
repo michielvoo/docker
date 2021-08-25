@@ -7,7 +7,8 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
 SHELL ["pwsh", "-Command"]
 
-RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
+    && Install-Module -Confirm:$False -Scope AllUsers -Name PSScriptAnalyzer -RequiredVersion 1.20.0
 
 COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
