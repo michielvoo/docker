@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/powershell:7.1.3-alpine-3.12-20210603
+
+LABEL org.opencontainers.image.title="pwsh"
+LABEL org.opencontainers.image.description="pwsh, for running a PowerShell command or script"
+
+ENV POWERSHELL_TELEMETRY_OPTOUT=1
+
+SHELL ["pwsh", "-Command"]
+
+RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+
+COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
+
+WORKDIR /root/work
+
+ENTRYPOINT ["pwsh"]

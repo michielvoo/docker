@@ -12,9 +12,9 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "pushd '${workspaceFolder}/${input:directory}' && docker build . --tag $(basename $PWD) && popd",
+            "command": "pushd '${workspaceFolder}/${input:image}' && docker build . --tag $(basename $PWD) && popd",
             "windows": {
-                "command": "Push-Location '${workspaceFolder}/${input:directory}'; & docker build . --tag $(Split-Path $PWD -Leaf); Pop-Location"
+                "command": "Push-Location '${workspaceFolder}/${input:image}'; & docker build . --tag $(Split-Path $PWD -Leaf); Pop-Location"
             },
             "problemMatcher": [],
             "group": "build"
@@ -22,27 +22,27 @@
         {
             "label": "Command",
             "type": "shell",
-            "command": "pushd '${workspaceFolder}/${input:directory}' && ./cmd.sh ${input:cmd} && popd",
+            "command": "pushd '${workspaceFolder}/${input:image}' && ./cmd.sh ${input:cmd} && popd",
             "windows": {
-                "command": "Push-Location '${workspaceFolder}/${input:directory}'; ./cmd.ps1 ${input:cmd}; Pop-Location"
+                "command": "Push-Location '${workspaceFolder}/${input:image}'; ./cmd.ps1 ${input:cmd}; Pop-Location"
             },
             "problemMatcher": []
         },
         {
             "label": "Publish",
             "type": "shell",
-            "command": "tag='${input:directory}/${input:tag}' && git tag \"$tag\" && git push origin \"$tag\"",
+            "command": "tag='${input:image}/${input:tag}' && git tag \"$tag\" && git push origin \"$tag\"",
             "windows": {
-                "command": "Set-Variable -Name 'Tag' -Value '${input:directory}/${input:tag}'; git tag \"$Tag\"; git push origin \"$Tag\""
+                "command": "Set-Variable -Name 'Tag' -Value '${input:image}/${input:tag}'; git tag \"$Tag\"; git push origin \"$Tag\""
             },
             "problemMatcher": [],
         },
         {
             "label": "Republish",
             "type": "shell",
-            "command": "tag=$(git describe --tags --match '${input:directory}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag && registry=$(basename $(dirname $(git config --get remote.origin.url))) && docker image rm --force $registry/$(echo $tag | tr '/' ':')",
+            "command": "tag=$(git describe --tags --match '${input:image}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag && registry=$(basename $(dirname $(git config --get remote.origin.url))) && docker image rm --force $registry/$(echo $tag | tr '/' ':')",
             "windows": {
-                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:directory}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\"; Set-Variable -Name \"registry\" -Value $(Split-Path -Leaf $(Split-Path $(git config --get remote.origin.url))); docker image rm --force \"$Registry/$($Tag.Replace('/', ':'))\""
+                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:image}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\"; Set-Variable -Name \"registry\" -Value $(Split-Path -Leaf $(Split-Path $(git config --get remote.origin.url))); docker image rm --force \"$Registry/$($Tag.Replace('/', ':'))\""
             },
             "problemMatcher": [],
         }
@@ -56,10 +56,10 @@
             "options": ["docs", "test", "version"]
         },
         {
-            "id": "directory",
+            "id": "image",
             "type": "pickString",
-            "description": "Choose a directory",
-            "options": ["aws", "az", "hugo", "pester", "psdoc"]
+            "description": "Choose a Docker image",
+            "options": ["aws", "az", "hugo", "pester", "psdoc", "pwsh"]
         },
         {
             "id": "tag",
