@@ -24,6 +24,7 @@ Docker images maintained in this repository:
 - [az](az) - Azure PowerShell on Alpine Linux, for provisioning Azure resources and deploying applications to Azure
 - [hugo](hugo) - Hugo Extended and Git on Alpine Linux, for building static websites
 - [pester](pester) - Pester for PowerShell on Alpine Linux, for automated testing of PowerShell scripts and modules
+- [pwsh](pwsh) - PowerShell on Alpine Linux, for running a PowerShell command or script
 
 ## Contributing
 
