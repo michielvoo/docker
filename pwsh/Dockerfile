@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:7.1.3-alpine-3.12-20210603
+FROM mcr.microsoft.com/powershell:7.2.2-alpine-3.14-20220318
 
 LABEL org.opencontainers.image.title="pwsh"
 LABEL org.opencontainers.image.description="pwsh, for running a PowerShell command or script"
