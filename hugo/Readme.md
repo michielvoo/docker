@@ -20,7 +20,7 @@ docker run --rm -v $PWD:/root/work hugo
 
 ### How to: update Hugo and Git
 
-Find the current versions of Hugo and Git for the base image's Apline Linux 
+Find the current versions of Hugo and Git for the base image's Alpine Linux 
 version [here](https://pkgs.alpinelinux.org/packages) and update the 
 corresponding `apk add` commands in the Dockerfile accordingly.
 

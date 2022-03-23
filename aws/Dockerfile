@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:7.1.3-alpine-3.12-20210603
+FROM mcr.microsoft.com/powershell:7.2.2-alpine-3.14-20220318
 
 LABEL org.opencontainers.image.title="AWS"
 LABEL org.opencontainers.image.description="AWS Tools for PowerShell and Git on Alpine Linux, for provisioning AWS resources and deploying applications to AWS"
@@ -8,13 +8,13 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 SHELL ["pwsh", "-Command"]
 
 RUN apk update --no-cache \
-    && apk add git=2.26.3-r0 --no-cache \
+    && apk add git=2.32.0-r0 --no-cache \
     && Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
-    && Install-Module -Confirm:$False -Scope AllUsers -Name AWS.Tools.Installer -RequiredVersion 1.0.2.1 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFormation -RequiredVersion 4.1.14.0 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.14.0 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.Route53 -RequiredVersion 4.1.14.0 \
-    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.S3 -RequiredVersion 4.1.14.0
+    && Install-Module -Confirm:$False -Scope AllUsers -Name AWS.Tools.Installer -RequiredVersion 1.0.2.4 \
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFormation -RequiredVersion 4.1.48.0 \
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.CloudFront -RequiredVersion 4.1.48.0 \
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.Route53 -RequiredVersion 4.1.48.0 \
+    && Install-AWSToolsModule -Confirm:$False -Scope AllUsers -Name AWS.Tools.S3 -RequiredVersion 4.1.48.0
 
 COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
 
