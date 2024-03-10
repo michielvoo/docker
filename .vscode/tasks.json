@@ -11,13 +11,25 @@
     [
         {
             "label": "Build",
-            "type": "shell",
-            "command": "pushd '${workspaceFolder}/${input:image}' && docker build . --tag $(basename $PWD) && popd",
-            "windows": {
-                "command": "Push-Location '${workspaceFolder}/${input:image}'; & docker build . --tag $(Split-Path $PWD -Leaf); Pop-Location"
-            },
-            "problemMatcher": [],
-            "group": "build"
+            "detail": "Build a Docker image",
+            "type": "process",
+            "command": "pwsh",
+            "args": ["-File", ".vscode/tasks.ps1", "Build", "${workspaceFolder}", "${input:name}"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build current",
+            "detail": "Build a Docker image from the currently opened Dockerfile",
+            "type": "process",
+            "command": "pwsh",
+            "args": ["-File", ".vscode/tasks.ps1", "Build", "${workspaceFolder}", "${file}"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
         },
         {
             "label": "Command",
@@ -50,6 +62,12 @@
     "inputs":
     [
         {
+            "id": "name",
+            "type": "pickString",
+            "description": "Choose a Docker image",
+            "options": ["ci/powershell"]
+        },
+        {
             "id": "cmd",
             "type": "pickString",
             "description": "Choose a command",
@@ -59,7 +77,7 @@
             "id": "image",
             "type": "pickString",
             "description": "Choose a Docker image",
-            "options": ["aws", "az", "hugo", "pester", "psdoc", "pwsh"]
+            "options": ["aws", "az", "hugo", "pester", "psdoc", "pwsh", "ci/powershell"]
         },
         {
             "id": "tag",
