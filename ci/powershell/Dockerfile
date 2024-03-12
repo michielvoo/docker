@@ -9,15 +9,15 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 SHELL ["pwsh", "-Command"]
 
 RUN \
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
-&& Install-Module -Confirm:$false -Scope AllUsers -Name Pester \
-&& Install-Module -Confirm:$false -Scope AllUsers -Name PSScriptAnalyzer
+Set-PSRepository -InstallationPolicy "Trusted" -Name "PSGallery" \
+&& Install-Module -Confirm:$false -Scope "AllUsers" -Name "Pester" \
+&& Install-Module -Confirm:$false -Scope "AllUsers" -Name "PSScriptAnalyzer"
 
 RUN \
 apt-get update \
-&& apt-get install -yq bash curl \
+&& apt-get install -yq "bash" "curl" \
 && apt-get clean \
-&& curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -InstallDir /usr/share/dotnet \
-&& ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
+&& curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --architecture "<auto>" --channel "8.0" --install-dir "/usr/share/dotnet" --runtime "dotnet" \
+&& ln -s "/usr/share/dotnet/dotnet" "/usr/bin/dotnet"
 
 COPY Profile.ps1 /root/.config/powershell/Microsoft.PowerShell_profile.ps1
