@@ -32,14 +32,35 @@
             }
         },
         {
-            "label": "Command",
-            "type": "shell",
-            "command": "pushd '${workspaceFolder}/${input:image}' && ./cmd.sh ${input:cmd} && popd",
+            "label": "Test",
+            "detail": "Run all tests",
+            "type": "process",
+            "command": "pwsh",
             "windows": {
-                "command": "Push-Location '${workspaceFolder}/${input:image}'; ./cmd.ps1 ${input:cmd}; Pop-Location"
+                "command": "powershell.exe"
             },
-            "problemMatcher": []
+            "args": ["-File", ".vscode/tasks.ps1", "Test", "${workspaceFolder}"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
         },
+        {
+            "label": "Test current",
+            "detail": "Run tests for the currently opened Dockerfile or in the currently opened PowerShell file",
+            "type": "process",
+            "command": "pwsh",
+            "windows": {
+                "command": "powershell.exe"
+            },
+            "args": ["-File", ".vscode/tasks.ps1", "Test", "${file}"],
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+
+
         {
             "label": "Publish",
             "type": "shell",
@@ -68,11 +89,13 @@
             "options": ["ci/powershell"]
         },
         {
-            "id": "cmd",
+            "id": "command",
             "type": "pickString",
-            "description": "Choose a command",
-            "options": ["docs", "test", "version"]
+            "description": "Choose a command to run",
+            "options": ["docker exec ..."]
         },
+
+
         {
             "id": "image",
             "type": "pickString",
