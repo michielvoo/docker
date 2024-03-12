@@ -1,0 +1,23 @@
+name: default
+
+on:
+  push:
+    branch:
+      - main
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run tests
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force
+          Invoke-Pester -Configuration @{
+             Run = @{
+                 Exit = $true
+             }
+          }
