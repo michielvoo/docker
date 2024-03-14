@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    inputs:
+      path:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  publish:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build
+        working-directory: ${{ inputs.path }}
+        run: |
+          docker build .
