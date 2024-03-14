@@ -1,0 +1,20 @@
+name: hugo
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - hugo:*
+    paths:
+      - hugo/**
+  pull_request:
+    paths:
+      - hugo/**
+
+jobs:
+  build-docker-image:
+    uses: ./.github/workflows/build-docker-image.yaml
+    with:
+      path: hugo
+    secrets: inherit
