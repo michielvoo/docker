@@ -11,7 +11,7 @@
     [
         {
             "label": "Build",
-            "detail": "Build a Docker image",
+            "detail": "Build a :latest Docker image",
             "type": "process",
             "command": "pwsh",
             "args": ["-File", ".vscode/tasks.ps1", "Build", "${workspaceFolder}", "${input:name}"],
@@ -22,7 +22,7 @@
         },
         {
             "label": "Build current",
-            "detail": "Build a Docker image from the currently opened Dockerfile",
+            "detail": "Build a :latest Docker image from the currently opened Dockerfile",
             "type": "process",
             "command": "pwsh",
             "args": ["-File", ".vscode/tasks.ps1", "Build", "${workspaceFolder}", "${file}"],
