@@ -10,7 +10,6 @@ on:
 defaults:
   run:
     shell: pwsh
-    working-directory: ${{ inputs.path }}
 
 jobs:
   publish:
@@ -22,6 +21,7 @@ jobs:
 
       - name: Test
         shell: pwsh
+        working-directory: ${{ inputs.path }}
         run: |
           Install-Module Pester -Force
           Invoke-Pester -Configuration @{
@@ -31,5 +31,7 @@ jobs:
           }
 
       - name: Build
+        shell: pwsh
+        working-directory: ${{ inputs.path }}
         run: |
           docker build .

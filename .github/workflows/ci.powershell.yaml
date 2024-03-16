@@ -10,6 +10,8 @@ on:
       - ci/powershell/**
   pull_request:
     paths:
+      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/ci.powershell.yaml
       - ci/powershell/**
 
 jobs:

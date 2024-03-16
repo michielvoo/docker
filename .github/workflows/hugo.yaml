@@ -10,6 +10,8 @@ on:
       - hugo/**
   pull_request:
     paths:
+      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/hugo.yaml
       - hugo/**
 
 jobs:
