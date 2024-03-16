@@ -10,6 +10,7 @@ on:
 defaults:
   run:
     shell: pwsh
+    working-directory: ${{ inputs.path }}
 
 jobs:
   publish:
@@ -19,7 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Test
+        shell: pwsh
+        run: |
+          Install-Module Pester -Force
+          Invoke-Pester -Configuration @{
+             Run = @{
+                 Exit = $true
+             }
+          }
+
       - name: Build
-        working-directory: ${{ inputs.path }}
         run: |
           docker build .
