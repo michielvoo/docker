@@ -23,8 +23,6 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
-          Get-Module Pester
-          Install-Module Pester -Force
           Invoke-Pester -Configuration @{
              Run = @{
                  Exit = $true
