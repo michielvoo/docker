@@ -12,7 +12,7 @@ Describe "hugo" {
         # Arrange
 
         # Act
-        $output = docker run -it --rm "$tag" version
+        $output = docker run --rm "$tag" version
 
         # Assert
         $output | Should -Match "hugo v0.120.4\+extended .+"
