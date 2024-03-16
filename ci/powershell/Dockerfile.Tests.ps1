@@ -1,7 +1,7 @@
 BeforeAll {
     $tag = [System.Guid]::NewGuid().ToString("N")
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
-    docker run --detach --interactive --name "$tag" "$tag" 2>&1 > $null
+    docker build "$PSScriptRoot" --tag "$tag"
+    docker run --detach --interactive --name "$tag" "$tag"
 }
 
 AfterAll {

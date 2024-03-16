@@ -1,11 +1,11 @@
-FROM alpine:edge
+FROM alpine:3.19
 
 LABEL org.opencontainers.image.title="Hugo"
 LABEL org.opencontainers.image.description="Hugo Extended and Git on Alpine Linux, for building static websites"
 
 RUN apk update --no-cache \
-    && apk add git=2.35.1-r1 --no-cache \
-    && apk add hugo=0.95.0-r0 --no-cache
+    && apk add git=~2.43 --no-cache \
+    && apk add hugo=~0.120 --no-cache
 
 EXPOSE 1313
 

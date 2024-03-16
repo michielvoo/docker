@@ -1,0 +1,36 @@
+name: Build Docker image
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  publish:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        shell: pwsh
+        working-directory: ${{ inputs.path }}
+        run: |
+          Invoke-Pester -Configuration @{
+             Run = @{
+                 Exit = $true
+             }
+          }
+
+      - name: Build
+        shell: pwsh
+        working-directory: ${{ inputs.path }}
+        run: |
+          docker build .
