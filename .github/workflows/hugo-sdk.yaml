@@ -1,22 +1,22 @@
-name: ci/powershell
+name: hugo-sdk
 
 on:
   push:
     branches:
       - main
     tags:
-      - ci/powershell:*
+      - hugo-sdk:*
     paths:
-      - ci/powershell/**
+      - hugo-sdk/**
   pull_request:
     paths:
       - .github/workflows/build-docker-image.yaml
-      - .github/workflows/ci.powershell.yaml
-      - ci/powershell/**
+      - .github/workflows/hugo-sdk.yaml
+      - hugo-sdk/**
 
 jobs:
   build-docker-image:
     uses: ./.github/workflows/build-docker-image.yaml
     with:
-      path: ci/powershell
+      path: hugo-sdk
     secrets: inherit
