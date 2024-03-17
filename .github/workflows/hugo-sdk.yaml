@@ -10,13 +10,13 @@ on:
       - hugo-sdk/**
   pull_request:
     paths:
-      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/_build.yaml
       - .github/workflows/hugo-sdk.yaml
       - hugo-sdk/**
 
 jobs:
   build-docker-image:
-    uses: ./.github/workflows/build-docker-image.yaml
+    uses: ./.github/workflows/_build.yaml
     with:
       path: hugo-sdk
     secrets: inherit
