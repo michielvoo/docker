@@ -59,26 +59,6 @@
                 "isDefault": false
             }
         },
-
-
-        {
-            "label": "Publish",
-            "type": "shell",
-            "command": "tag='${input:image}/${input:tag}' && git tag \"$tag\" && git push origin \"$tag\"",
-            "windows": {
-                "command": "Set-Variable -Name 'Tag' -Value '${input:image}/${input:tag}'; git tag \"$Tag\"; git push origin \"$Tag\""
-            },
-            "problemMatcher": [],
-        },
-        {
-            "label": "Republish",
-            "type": "shell",
-            "command": "tag=$(git describe --tags --match '${input:image}/*' --abbrev=0) && git tag --delete $tag && git tag $tag && git push origin --delete $tag && git push origin $tag && registry=$(basename $(dirname $(git config --get remote.origin.url))) && docker image rm --force $registry/$(echo $tag | tr '/' ':')",
-            "windows": {
-                "command": "Set-Variable -Name 'Tag' -Value $(git describe --tags --match '${input:image}/*' --abbrev=0); git tag --delete \"$Tag\"; git tag \"$Tag\"; git push origin --delete \"$Tag\"; git push origin \"$Tag\"; Set-Variable -Name \"registry\" -Value $(Split-Path -Leaf $(Split-Path $(git config --get remote.origin.url))); docker image rm --force \"$Registry/$($Tag.Replace('/', ':'))\""
-            },
-            "problemMatcher": [],
-        }
     ],
     "inputs":
     [
@@ -86,26 +66,7 @@
             "id": "name",
             "type": "pickString",
             "description": "Choose a Docker image",
-            "options": ["ci/powershell"]
-        },
-        {
-            "id": "command",
-            "type": "pickString",
-            "description": "Choose a command to run",
-            "options": ["docker exec ..."]
-        },
-
-
-        {
-            "id": "image",
-            "type": "pickString",
-            "description": "Choose a Docker image",
-            "options": ["aws", "az", "hugo", "pester", "psdoc", "pwsh", "ci/powershell"]
-        },
-        {
-            "id": "tag",
-            "type": "promptString",
-            "description": "Set a tag"
+            "options": ["aws", "az", "ci/powershell", "hugo", "pester", "pwsh"]
         }
     ]
 }
