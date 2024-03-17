@@ -13,7 +13,9 @@ function Invoke-Task {
 
             Push-Location $(Split-Path $file -Parent)
 
-            docker build "." --tag "$name"
+            docker build "." `
+                --tag "$name`:dev" `
+                --label "org.opencontainers.image.source=$file"
 
             Pop-Location
         }
@@ -114,6 +116,9 @@ function Get-DockerfilePath {
     }
 
     $name = [System.IO.Path]::GetRelativePath($workspaceFolder, (Split-Path $file -Parent))
+
+    $parent = Split-Path $workspaceFolder -Parent
+    $name = "$(Split-Path $parent -Leaf)/$name"
 
     return $file, $name
 }
