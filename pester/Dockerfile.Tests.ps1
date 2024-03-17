@@ -36,6 +36,6 @@ Describe "pester" {
         $output = docker run --rm "$tag"
 
         # Assert
-        $output | Should -Match "System.Management.Automation.RuntimeException: No test files were found and no scriptblocks were provided.+"
+        $output[0] | Should -Match "System.Management.Automation.RuntimeException: No test files were found and no scriptblocks were provided.+"
     }
 }
