@@ -4,8 +4,8 @@ AWS Tools for PowerShell and Git on Alpine Linux, for provisioning AWS resources
 
 [![aws][badge]][workflow]
 
-[badge]: https://github.com/michielvoo/Docker/actions/workflows/aws.yml/badge.svg
-[workflow]: https://github.com/michielvoo/Docker/actions/workflows/aws.yml
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/aws.yaml/badge.svg
+[workflow]: https://github.com/michielvoo/Docker/actions/workflows/aws.yaml
 
 The following PowerShell modules are installed:
 
