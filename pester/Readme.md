@@ -1,4 +1,4 @@
-# Pester
+# pester
 
 Pester, for running automated PowerShell tests
 
@@ -7,8 +7,6 @@ The following PowerShell modules are installed:
 - [Pester](https://www.powershellgallery.com/packages/Pester)
 
 ## Usage
-
-(All example commands assume a 'local' build of the Docker image is available.)
 
 This Docker image supports execution of Pester tests. A directory containing 
 PowerShell scripts and their accompanying tests should be mounted in the 
@@ -19,30 +17,4 @@ value of the `-Configuration` argument a JSON formatted string can be used.
 ```
 docker run --rm -it -v $PWD:/root/work pester -Output Detailed
 docker run --rm -it -v $PWD:/root/work pester -Configuration "{ \"Output\": { \"Verbosity\": \"Detailed\" } }"
-```
-
-## Contributing
-
-### How to: update PowerShell
-
-Find the Docker tag corresponding to a newer version of PowerShell on Alpine 
-Linux [here](https://hub.docker.com/_/microsoft-powershell) and update the 
-`FROM` statement in the Dockerfile accordingly.
-
-After building the local Docker image run it to check the PowerShell version:
-
-```
-docker run --rm -it --entrypoint pwsh pester -Version
-```
-
-(Notice that this command overrides the entrypoint of the image.)
-
-### How to: update Pester
-
-Find the latest version of the PowerShell modules that are installed and update 
-the `-RequiredVersion` argument in the corresponding `Install-Module` commands 
-in the Dockerfile accordingly.
-
-```
-docker run --rm -it --entrypoint pwsh pester -Command "Get-Module"
 ```

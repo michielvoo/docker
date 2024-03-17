@@ -11,6 +11,14 @@ AfterAll {
 }
 
 Describe "pester" {
+    It "has Pester" {
+        # Act
+        $output = docker run --entrypoint pwsh --rm "$tag" -Command "(Get-Module Pester).Version.ToString()"
+
+        # Assert
+        $output | Should -Match "5\.\d+\.\d+"
+    }
+
     It "has Invoke-Pester as its entrypoint" {
         # Act
         $output = docker run --rm "$tag" 
