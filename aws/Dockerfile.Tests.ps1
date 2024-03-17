@@ -1,4 +1,4 @@
-BeforeAll{
+BeforeAll {
     $name = Split-Path "$PSScriptRoot" -Leaf
 
     $ancestor = Split-Path "$PSScriptRoot" -Parent
@@ -21,22 +21,21 @@ BeforeAll{
 
     $tag = "$name`:test"
 
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
-    $containerId = docker run --detach --interactive "$tag"
+    docker build "$PSScriptRoot" --tag "$tag" 2>&1 >$null
 }
 
 AfterAll {
-    docker stop "$containerId"
-    docker rm "$containerId"
     docker image rm --force "$tag"
 }
 
-Describe "ci/powershell" {
-    It "can be used to exec a command" {
+Describe "aws" {
+    It "has pwsh as its entrypoint" {
+        # Arrange
+
         # Act
-        $version = docker exec "$containerId" dotnet --list-runtimes
+        $output = docker run --rm "$tag" -Version
 
         # Assert
-        $version | Should -BeExactly "Microsoft.NETCore.App 8.0.3 [/usr/share/dotnet/shared/Microsoft.NETCore.App]"
+        $output | Should -Match "PowerShell 7\.2\.\d+"
     }
 }

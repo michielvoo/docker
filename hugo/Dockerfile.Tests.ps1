@@ -20,7 +20,6 @@ BeforeAll {
     }
 
     $tag = "$name`:test"
-    Write-Warning $tag
 
     docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
 }
