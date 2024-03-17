@@ -1,6 +1,6 @@
 FROM alpine:3.19
 
-LABEL org.opencontainers.image.title="Hugo"
+LABEL org.opencontainers.image.title="Hugo SDK"
 LABEL org.opencontainers.image.description="Hugo Extended and Git on Alpine Linux, for building static websites"
 
 RUN apk update --no-cache \
