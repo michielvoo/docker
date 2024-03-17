@@ -1,6 +1,6 @@
-# ci/powershell
+# powershell-sdk
 
-Docker image for continuous integration of PowerShell modules
+Docker image for development of PowerShell modules
 
 Compatible with Azure Pipelines
 
