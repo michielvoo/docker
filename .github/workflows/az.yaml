@@ -1,0 +1,22 @@
+name: az
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - az:*
+    paths:
+      - az/**
+  pull_request:
+    paths:
+      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/az.yaml
+      - az/**
+
+jobs:
+  build-docker-image:
+    uses: ./.github/workflows/build-docker-image.yaml
+    with:
+      path: az
+    secrets: inherit

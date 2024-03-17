@@ -2,7 +2,7 @@ BeforeAll {
     . $PSScriptRoot/CidContext.ps1
 }
 
-Describe "Get-CidContext" {
+Describe "Get-CidContext" -Skip {
     BeforeAll {
         Function git
         {

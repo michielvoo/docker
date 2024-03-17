@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:7.2.2-alpine-3.14-20220318
+FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
 LABEL org.opencontainers.image.title="Azure"
 LABEL org.opencontainers.image.description="Azure PowerShell and Git on Alpine Linux, for provisioning Azure resources and deploying applications to Azure"
@@ -8,7 +8,7 @@ ENV POWERSHELL_TELEMETRY_OPTOUT=1
 SHELL ["pwsh", "-Command"]
 
 RUN apk update --no-cache \
-    && apk add git=2.32.0-r0 --no-cache \
+    && apk add git=~2.38 --no-cache \
     && Set-PSRepository -Name PSGallery -InstallationPolicy Trusted \
     && Install-Module -Confirm:$False -Scope AllUsers -Name Az.Accounts -RequiredVersion 2.7.4 \
     && Install-Module -Confirm:$False -Scope AllUsers -Name Az.Functions -RequiredVersion 4.0.1 \

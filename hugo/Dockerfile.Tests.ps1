@@ -1,26 +1,7 @@
 BeforeAll {
-    $name = Split-Path "$PSScriptRoot" -Leaf
+    Import-Module "$PSScriptRoot/../Utilities.psm1"
 
-    $ancestor = Split-Path "$PSScriptRoot" -Parent
-    while ($true) {
-        if (Get-ChildItem $ancestor "License.txt") {
-            if ($Env:GITHUB_REPOSITORY) {
-                $name = "$("$Env:GITHUB_REPOSITORY".Split("/")[0])/$name"
-            }
-            else {
-                $ancestor = Split-Path $ancestor -Parent
-                $name = "$(Split-Path $ancestor -Leaf)/$name"
-            }
-
-            break
-        }
-
-        $name = "$(Split-Path $ancestor -Leaf)/$name"
-        $ancestor = Split-Path $ancestor -Parent
-    }
-
-    $tag = "$name`:test"
-    Write-Warning $tag
+    $tag = Get-DockerImageTag $PSScriptRoot "test"
 
     docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
 }
@@ -31,12 +12,18 @@ AfterAll {
 
 Describe "hugo" {
     It "has hugo as its entrypoint" {
-        # Arrange
-
         # Act
         $output = docker run --rm "$tag" version
 
         # Assert
         $output | Should -Match "hugo v0.120.4\+extended .+"
+    }
+
+    It "has Git" {
+        # Act
+        $output = docker run --rm --entrypoint "git" "$tag" --version
+
+        # Assert
+        $output | Should -Match "git version 2\.43\..+"
     }
 }
