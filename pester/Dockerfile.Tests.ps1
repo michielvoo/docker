@@ -29,7 +29,7 @@ AfterAll {
 }
 
 Describe "pester" {
-    It "has Pester as its entrypoint" {
+    It "has Invoke-Pester as its entrypoint" {
         # Act
         $output = docker run --rm "$tag" 
 
