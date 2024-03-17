@@ -21,21 +21,21 @@ BeforeAll {
 
     $tag = "$name`:test"
 
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 >$null
+    docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
 }
 
 AfterAll {
     docker image rm --force "$tag"
 }
 
-Describe "az" {
-    It "has pwsh as its entrypoint" {
+Describe "pester" {
+    It "has Pester as its entrypoint" {
         # Arrange
 
         # Act
-        $output = docker run --rm "$tag" -Version
+        $output = docker run --rm "$tag"
 
         # Assert
-        $output | Should -Match "PowerShell 7\.2\.\d+"
+        $output | Should -Match "System.Management.Automation.RuntimeException: No test files were found and no scriptblocks were provided.+"
     }
 }

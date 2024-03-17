@@ -1,0 +1,22 @@
+name: pester
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - pester:*
+    paths:
+      - pester/**
+  pull_request:
+    paths:
+      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/pester.yaml
+      - pester/**
+
+jobs:
+  build-docker-image:
+    uses: ./.github/workflows/build-docker-image.yaml
+    with:
+      path: pester
+    secrets: inherit
