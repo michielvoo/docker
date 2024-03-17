@@ -2,6 +2,11 @@
 
 Pester, for running automated PowerShell tests
 
+[![pester][badge]][workflow]
+
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/pester.yaml/badge.svg
+[workflow]: https://github.com/michielvoo/Docker/actions/workflows/pester.yaml
+
 The following PowerShell modules are installed:
 
 - [Pester](https://www.powershellgallery.com/packages/Pester)

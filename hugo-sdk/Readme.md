@@ -2,6 +2,11 @@
 
 Hugo Extended and Git on Alpine Linux, for building static websites
 
+[![hugo-sdk][badge]][workflow]
+
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/hugo-sdk.yaml/badge.svg
+[workflow]: https://github.com/michielvoo/Docker/actions/workflows/hugo-sdk.yaml
+
 ## Usage
 
 This Docker image supports development and automated building of static 

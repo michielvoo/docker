@@ -2,6 +2,11 @@
 
 Azure PowerShell and Git on Alpine Linux, for provisioning Azure resources
 
+[![az][badge]][workflow]
+
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/az.yaml/badge.svg
+[workflow]: https://github.com/michielvoo/Docker/actions/workflows/az.yaml
+
 The following PowerShell modules are installed:
 
 - [Az.Accounts](https://www.powershellgallery.com/packages/Az.Accounts)

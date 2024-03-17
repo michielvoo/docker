@@ -2,6 +2,11 @@
 
 pwsh, for running a PowerShell command or script
 
+[![pwsh][badge]][workflow]
+
+[badge]: https://github.com/michielvoo/Docker/actions/workflows/pwsh.yaml/badge.svg
+[workflow]: https://github.com/michielvoo/Docker/actions/workflows/pwsh.yaml
+
 The following PowerShell modules are installed:
 
 - [PSScriptAnalyzer](https://www.powershellgallery.com/packages/PSScriptAnalyzer)
