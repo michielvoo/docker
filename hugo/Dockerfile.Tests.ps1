@@ -30,12 +30,18 @@ AfterAll {
 
 Describe "hugo" {
     It "has hugo as its entrypoint" {
-        # Arrange
-
         # Act
         $output = docker run --rm "$tag" version
 
         # Assert
         $output | Should -Match "hugo v0.120.4\+extended .+"
+    }
+
+    It "has Git" {
+        # Act
+        $output = docker run --rm --entrypoint "git" "$tag" --version
+
+        # Assert
+        $output | Should -Match "git version 2\.43\..+"
     }
 }
