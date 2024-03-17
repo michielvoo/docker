@@ -1,3 +1,5 @@
+Import-Module "$PSScriptRoot/../Utilities.psm1"
+
 function Invoke-Task {
     param (
         [Parameter(Mandatory, Position = 0)]
@@ -9,7 +11,7 @@ function Invoke-Task {
 
     switch ($Task) {
         "Build" {
-            $file, $name = Get-DockerfilePath $Arguments[0] $Arguments[1]
+            $file, $name = Get-DockerfilePath $Arguments[0]
 
             Push-Location $(Split-Path $file -Parent)
 
@@ -70,57 +72,6 @@ function Invoke-Task {
             Write-Warning "File not found ($path)"
         }
     }
-}
-
-function Get-DockerfilePath {
-    param (
-        [string]$workspaceFolder,
-        [string]$fileOrName
-    )
-
-    if (-not (Test-Path $workspaceFolder)) {
-        Write-Warning "File or directory not found ($workspaceFolder)"
-
-        exit 1
-    }
-
-    if (-not (Get-Item $workspaceFolder).PSIsContainer) {
-        Write-Warning "Expected directory but found file ($workspaceFolder)"
-
-        exit 1
-    }
-
-    if ([System.IO.Path]::IsPathRooted($fileOrName)) {
-        if ($(Split-Path $fileOrName -Leaf) -ne "Dockerfile") {
-            Write-Warning "Expected path to Dockerfile but got path to $(Split-Path $fileOrName -Leaf)"
-
-            exit 1
-        }
-
-        $file = $fileOrName
-    }
-    else {
-        $file = Join-Path $workspaceFolder $fileOrName "Dockerfile"
-    }
-
-    if (-not (Test-Path $file)) {
-        Write-Warning "File or directory not found ($file)"
-
-        exit 1
-    }
-
-    if ((Get-Item $file).PSIsContainer) {
-        Write-Warning "Expected file but found directory ($file)"
-
-        exit 1
-    }
-
-    $name = [System.IO.Path]::GetRelativePath($workspaceFolder, (Split-Path $file -Parent))
-
-    $parent = Split-Path $workspaceFolder -Parent
-    $name = "$(Split-Path $parent -Leaf)/$name"
-
-    return $file, $name
 }
 
 Invoke-Task $args[0] ($args | Select-Object  -Skip 1)
