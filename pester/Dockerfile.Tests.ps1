@@ -30,10 +30,8 @@ AfterAll {
 
 Describe "pester" {
     It "has Pester as its entrypoint" {
-        # Arrange
-
         # Act
-        $output = docker run --rm "$tag"
+        $output = docker run --rm "$tag" 
 
         # Assert
         $output[0] | Should -Match "System.Management.Automation.RuntimeException: No test files were found and no scriptblocks were provided.+"

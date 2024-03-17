@@ -1,18 +1,17 @@
-#! /usr/bin/pwsh
-
-$ConfigurationIndex = -1
-For ($i = 0; $i -lt $Args.Count; $i++)
+# Find the -Configuration argument
+$configurationIndex = -1
+for ($i = 0; $i -lt $args.Count; $i++)
 {
-    $Arg = $Args[$i]
-    If ($Arg.ToLower() -eq "-configuration")
+    if ($args[$i].ToLower() -eq "-configuration")
     {
-        $ConfigurationIndex = $i + 1
+        $configurationIndex = $i + 1
     }
 }
 
-If ($ConfigurationIndex -ne -1)
+if ($configurationIndex -ne -1)
 {
-    $Args[$ConfigurationIndex] = ConvertFrom-Json -InputObject $Args[$ConfigurationIndex]
+    # Assume the -Configuration argument was given as a JSON string
+    $args[$configurationIndex] = ConvertFrom-Json -InputObject $args[$configurationIndex]
 }
 
-Invoke-Pester @Args
+Invoke-Pester @args
