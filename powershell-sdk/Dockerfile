@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/powershell:lts-7.2-debian-11
 
-LABEL org.opencontainers.image.title="ci/powershell"
-LABEL org.opencontainers.image.description="Docker image for continuous integration of PowerShell modules"
+LABEL org.opencontainers.image.title="PowerShell SDK"
+LABEL org.opencontainers.image.description="Docker image for the development of PowerShell modules"
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1

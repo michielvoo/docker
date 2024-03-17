@@ -1,22 +1,22 @@
-name: hugo
+name: powershell-sdk
 
 on:
   push:
     branches:
       - main
     tags:
-      - hugo:*
+      - powershell-sdk:*
     paths:
-      - hugo/**
+      - powershell-sdk/**
   pull_request:
     paths:
       - .github/workflows/build-docker-image.yaml
-      - .github/workflows/hugo.yaml
-      - hugo/**
+      - .github/workflows/powershell-sdk.yaml
+      - powershell-sdk/**
 
 jobs:
   build-docker-image:
     uses: ./.github/workflows/build-docker-image.yaml
     with:
-      path: hugo
+      path: powershell-sdk
     secrets: inherit
