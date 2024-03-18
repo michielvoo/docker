@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM mcr.microsoft.com/powershell:lts-7.2-debian-11
 
 LABEL org.opencontainers.image.title="PowerShell SDK"

@@ -15,7 +15,7 @@ function Invoke-Task {
 
             Push-Location $(Split-Path $file -Parent)
 
-            docker build "." `
+            docker buildx "." `
                 --tag "$name`:dev" `
                 --label "org.opencontainers.image.source=$file"
 

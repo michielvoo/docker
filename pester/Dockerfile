@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
 LABEL org.opencontainers.image.title="Pester"
