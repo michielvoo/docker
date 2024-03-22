@@ -39,14 +39,12 @@ jobs:
               docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
           }
 
-
-          # "default" builder uses the "docker" driver, which does not support multi-platform build
+          # The "default" builder uses the "docker" driver, which does not support multi-platform build
           # Create a new builder that uses the "docker-container" driver, which does supports multi-platform builds
           docker buildx create --name "multi-platform" --driver "docker-container"
 
-          # Build the multi-platform image using the multi-platform builder
-          $Env:BUILDKIT_PROGRESS = "plain"
-          docker buildx --builder "multi-platform" build --platform "linux/amd64,linux/arm64" --tag "${{ inputs.path }}" .
+          # Build the multi-platform image using the "multi-platform" builder
+          docker buildx --builder "multi-platform" build --load --platform "linux/amd64,linux/arm64" --tag "${{ inputs.path }}" .
 
           $image = ConvertFrom-Json $(docker image inspect --format "json" "${{ inputs.path }}")
           $image[0].Architecture
