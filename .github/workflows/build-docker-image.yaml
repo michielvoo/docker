@@ -75,5 +75,7 @@ jobs:
               $image.Architecture
           }
           else {
-              docker manifest inspect "$name"
+              $manifest = ConvertFrom-Json $(docker manifest inspect "$name")
+              $manifest.manifests[0].platform.architecture
+              $manifest.manifests[1].platform.architecture
           }
