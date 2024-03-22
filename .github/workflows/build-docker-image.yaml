@@ -33,19 +33,43 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
-          $docker = ConvertFrom-Json $(docker version --format "json")
-          if (-not ($docker.Server.Platform.Name.StartsWith("Docker Desktop"))) {
+          $multiPlatform = $false
+
+          if ($multiPlatform) {
               # Register handlers for additional architectures
               docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
+
+              # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
+              docker buildx create --name "multi-platform" --driver "docker-container"
+              $Env:BUILDX_BUILDER = "multi-platform"
+
+              # Target multiple platforms
+              $platform = "linux/amd64,linux/arm64"
+
+              # Export the manifest list to a registry
+              $output = "type=image,push=true"
+          }
+          else {
+              # Use the "default" builder which uses the "docker" driver
+              $Env:BUILDX_BUILDER = "default"
+
+              # Target the client's platform
+              $platform = "local"
+
+              # Do not export the image to a registry
+              # The image will appear in `docker images` thanks to the "default" builder's "docker" driver
+              $output = "type=image,push=false"
           }
 
-          # The "default" builder uses the "docker" driver, which does not support multi-platform build
-          # Create a new builder that uses the "docker-container" driver, which does supports multi-platform builds
-          docker buildx create --name "multi-platform" --driver "docker-container"
-
           # Build the multi-platform image using the "multi-platform" builder
-          docker buildx --builder "multi-platform" build --load --platform "linux/amd64,linux/arm64" --tag "${{ inputs.path }}" .
+          docker buildx build --platform "$platform" --output "$output" --tag "${{ inputs.path }}" .
 
           $image = ConvertFrom-Json $(docker image inspect --format "json" "${{ inputs.path }}")
-          $image[0].Architecture
-          $image[1].Architecture
+
+          if ($multiPlatform) {
+              $image.Architecture
+          }
+          else {
+              $image[0].Architecture
+              $image[1].Architecture
+          }
