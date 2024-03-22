@@ -47,7 +47,11 @@ jobs:
               $platform = "linux/amd64,linux/arm64"
 
               # Export the manifest list to a registry
-              $output = "type=image,push=true"
+              $name = "docker.io/${{ inputs.path }}:0.0.1"
+              $push = "true"
+
+              # Log in to the Docker Hub registry
+              Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           }
           else {
               # Use the "default" builder which uses the "docker" driver
@@ -58,18 +62,18 @@ jobs:
 
               # Do not export the image to a registry
               # The image will appear in `docker images` thanks to the "default" builder's "docker" driver
-              $output = "type=image,push=false"
+              $name = "${{ inputs.path }}:dev"
+              $push = "false"
           }
 
-          # Build the multi-platform image using the "multi-platform" builder
-          docker buildx build --platform "$platform" --output "$output" --tag "${{ inputs.path }}" .
+          # Build the image
+          docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" --tag "${{ inputs.path }}" .
 
-          $image = ConvertFrom-Json $(docker image inspect --format "json" "${{ inputs.path }}")
-
-          if ($multiPlatform) {
+          # Check the platform(s) of the image
+          if (-not $multiPlatform) {
+              $image = ConvertFrom-Json $(docker image inspect --format "json" "$name")
               $image.Architecture
           }
           else {
-              $image[0].Architecture
-              $image[1].Architecture
+              docker manifest inspect "$name"
           }
