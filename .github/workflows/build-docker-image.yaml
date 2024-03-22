@@ -39,7 +39,9 @@ jobs:
               docker run --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
           }
 
-          docker build --tag "${{ inputs.path }}" .
+          $Env:BUILDKIT_PROGRESS=plain
+          docker build --platform=linux/amd64,linux/arm64 --tag "${{ inputs.path }}" .
 
           $image = ConvertFrom-Json $(docker image inspect --format json "${{ inputs.path }}")
-          $image.Architecture
+          $image[0].Architecture
+          $image[1].Architecture
