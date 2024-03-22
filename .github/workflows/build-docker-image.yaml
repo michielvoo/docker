@@ -39,5 +39,6 @@ jobs:
               docker run --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
           }
 
-          docker build .
+          docker build --tag "${{ inputs.path }}" .
 
+          docker image inspect "${{ inputs.path }}"
