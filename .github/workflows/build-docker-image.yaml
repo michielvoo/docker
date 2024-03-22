@@ -33,7 +33,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
-          $docker = Convert-FromJson $(docker version --format json)
+          $docker = ConvertFrom-Json $(docker version --format json)
           if (-not ($docker.Server.Platform.Name.StartsWith("Docker Desktop"))) {
               # Register handlers for additional architectures
               docker run --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
