@@ -46,7 +46,7 @@ jobs:
 
           # Build the multi-platform image using the multi-platform builder
           $Env:BUILDKIT_PROGRESS = "plain"
-          docker buildx --builder "multi-platform" --platform "linux/amd64,linux/arm64" --tag "${{ inputs.path }}" .
+          docker buildx --builder "multi-platform" build --platform "linux/amd64,linux/arm64" --tag "${{ inputs.path }}" .
 
           $image = ConvertFrom-Json $(docker image inspect --format "json" "${{ inputs.path }}")
           $image[0].Architecture
