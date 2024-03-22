@@ -41,4 +41,5 @@ jobs:
 
           docker build --tag "${{ inputs.path }}" .
 
-          docker image inspect "${{ inputs.path }}"
+          $image = ConvertFrom-Json $(docker image inspect --format json "${{ inputs.path }}")
+          $image.Architecture
