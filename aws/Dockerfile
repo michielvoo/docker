@@ -2,9 +2,6 @@
 
 FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
-LABEL org.opencontainers.image.title="AWS"
-LABEL org.opencontainers.image.description="AWS Tools for PowerShell and Git on Alpine Linux, for provisioning AWS resources and deploying applications to AWS"
-
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
 SHELL ["pwsh", "-Command"]

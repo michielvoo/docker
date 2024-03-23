@@ -2,9 +2,6 @@
 
 FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
-LABEL org.opencontainers.image.title="pwsh"
-LABEL org.opencontainers.image.description="pwsh, for running a PowerShell command or script"
-
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
