@@ -1,9 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
-
-LABEL org.opencontainers.image.title="Pester"
-LABEL org.opencontainers.image.description="Pester, for running automated PowerShell tests"
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
