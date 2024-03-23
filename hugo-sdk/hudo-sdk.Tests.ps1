@@ -1,15 +1,14 @@
 BeforeDiscovery {
     Import-Module "$PSScriptRoot/../Utilities.psm1"
 
-    $metadata = Get-DockerMetadata "$PSScriptRoot/hugo-sdk.Dockerfile"
+    $testCases = Get-DockerTestCases "$PSScriptRoot/hugo-sdk.Dockerfile"
 }
 
-Describe "hugo-sdk on <_>" -ForEach $metadata.Platforms {
+Describe "hugo-sdk on <platform>" -ForEach $testCases {
     BeforeAll {
-        $metadata = Get-DockerMetadata "$PSScriptRoot/hugo-sdk.Dockerfile"
         $tag = "$($metadata.Name):test"
     
-        docker build --file "$($metadata.Dockerfile)" --platform "$_" --tag "$tag" "$($metadata.Directory)"
+        docker build --file "$($metadata.Dockerfile)" --platform "$platform" --tag "$tag" "$($metadata.Directory)"
     }
 
     AfterAll {

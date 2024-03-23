@@ -1,5 +1,28 @@
 # Utilities for use in Pester tests, Visual Studio Code tasks, and GitHub workflows
 
+function Read-DockerMetadata {
+    param (
+        [string]$Dockerfile
+    )
+
+    $metadataFile = ($dockerfile -replace "\.Dockerfile$") + ".psd1" 
+    if (-not (Test-Path $metadataFile) -or (Get-Item $metadataFile).PSIsContainer) {
+        Throw "Metadata file '$(Split-Path $metadataFile -Leaf)' not found"
+    }
+
+    # Read metadata
+    $metadata = Import-PowerShellDataFile $metadataFile
+    if (-not $metadata.Labels) {
+        $metadata.Labels = @{}
+    }
+
+    if (-not $metadata.Platforms) {
+        throw "No platform(s) specified in metadata"
+    }
+
+    return $metadata
+}
+
 function Get-DockerName {
     param (
         [string]$Registry,
@@ -85,22 +108,8 @@ function Get-DockerMetadata {
         Throw "Expected file but found directory '$dockerfile'"
     }
 
-    # Read build metadata from .psd1 file
-
-    $metadataFile = ($dockerfile -replace "\.Dockerfile$") + ".psd1" 
-    if (-not (Test-Path $metadataFile) -or (Get-Item $metadataFile).PSIsContainer) {
-        Throw "Metadata file '$(Split-Path $metadataFile -Leaf)' not found"
-    }
-
-    # Read metadata
-    $metadata = Import-PowerShellDataFile $metadataFile
-    if (-not $metadata.Labels) {
-        $metadata.Labels = @{}
-    }
-
-    if (-not $metadata.Platforms) {
-        throw "No platform(s) specified in metadata"
-    }
+    # Read metadata from PowerShell data file
+    $metadata = Read-DockerMetadata $dockerfile
 
     # Set paths
     $metadata.Directory = "$directory"
@@ -118,4 +127,21 @@ function Get-DockerMetadata {
     return $metadata
 }
 
+function Get-DockerTestCases {
+    # Gets an array of hashtable objects, one for each target platform
+    param (
+        [string] $dockerfileOrName
+    )
+
+    $metadata = Get-DockerMetadata $dockerfileOrName
+
+    $testCases = $metadata.Platforms | ForEach-Object {@{
+        Metadata = $metadata
+        Platform = $_
+    }}
+
+    return $testCases
+}
+
 Export-ModuleMember Get-DockerMetadata
+Export-ModuleMember Get-DockerTestCases
