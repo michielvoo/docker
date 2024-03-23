@@ -11,13 +11,19 @@ function Invoke-Task {
 
     switch ($Task) {
         "Build" {
-            $file, $name = Get-DockerfilePath $Arguments[0]
+            $metadata = Get-DockerMetadata $Arguments[0]
 
-            Push-Location $(Split-Path $file -Parent)
+            Push-Location $data.Directory
 
-            docker buildx "." `
-                --tag "$name`:dev" `
-                --label "org.opencontainers.image.source=$file"
+            $build = "docker buildx build"
+            foreach ($label in $metadata.Labels.GetEnumerator()) {
+                $build = "$build --label ""$($label.Name)=$($label.Value)"""
+            }
+            $build = "$build --output ""type=image,name=$($metadata.Name):dev,push=false"""
+            $build = "$build --file ""$($metadata.Dockerfile)"""
+            $build = "$build ""$($metadata.Directory)"""
+
+            Invoke-Expression $build
 
             Pop-Location
         }

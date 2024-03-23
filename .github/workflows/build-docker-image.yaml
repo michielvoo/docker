@@ -67,7 +67,7 @@ jobs:
           }
 
           # Build the image
-          docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" --tag "${{ inputs.path }}" .
+          docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" .
 
           # Check the platform(s) of the image
           if (-not $multiPlatform) {
