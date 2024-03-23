@@ -1,7 +1,5 @@
 BeforeDiscovery {
-    Import-Module "$PSScriptRoot/../Utilities.psm1"
-
-    $testCases = Get-DockerTestCases "$PSScriptRoot/hugo-sdk.Dockerfile"
+    Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/hugo-sdk.Dockerfile")
 }
 
 Describe "hugo-sdk on <platform>" -ForEach $testCases {
