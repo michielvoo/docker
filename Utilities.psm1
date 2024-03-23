@@ -56,7 +56,7 @@ function Get-DockerMetadata {
             Throw "Expected path to " +
                 "a file named 'Dockerfile' or " +
                 "a file with extension '.Dockerfile' " +
-                "but got path to $leaf"
+                "but got path to '$leaf'"
         }
 
         $directory = Split-Path $dockerfileOrName -Parent
@@ -76,26 +76,30 @@ function Get-DockerMetadata {
     # Exit when path does not exist
 
     if (-not (Test-Path $dockerfile)) {
-        Throw "File or directory not found ($dockerfile)"
+        Throw "File or directory '$dockerfile' not found"
     }
 
     # Exit when path is not a file
 
     if ((Get-Item $dockerfile).PSIsContainer) {
-        Throw "Expected file but found directory ($dockerfile)"
+        Throw "Expected file but found directory '$dockerfile'"
     }
 
     # Read build metadata from .psd1 file
 
     $metadataFile = ($dockerfile -replace "\.Dockerfile$") + ".psd1" 
     if (-not (Test-Path $metadataFile) -or (Get-Item $metadataFile).PSIsContainer) {
-        Throw "File not found ($metadataFile)"
+        Throw "Metadata file '$(Split-Path $metadataFile -Leaf)' not found"
     }
 
     # Read metadata
     $metadata = Import-PowerShellDataFile $metadataFile
     if (-not $metadata.Labels) {
         $metadata.Labels = @{}
+    }
+
+    if (-not $metadata.Platforms) {
+        throw "No platform(s) specified in metadata"
     }
 
     # Set paths
