@@ -1,17 +1,15 @@
 BeforeDiscovery {
-    $targetPlatforms = @(
-        @{ Platform = "linux/amd64" }
-        @{ Platform = "linux/arm64" }
-    )
+    Import-Module "$PSScriptRoot/../Utilities.psm1"
+
+    $metadata = Get-DockerMetadata "$PSScriptRoot/hugo-sdk.Dockerfile"
 }
 
-Describe "hugo-sdk on <platform>" -ForEach $targetPlatforms {
+Describe "hugo-sdk on <_>" -ForEach $metadata.Platforms {
     BeforeAll {
-        Import-Module "$PSScriptRoot/../Utilities.psm1"
-
-        $tag = Get-DockerImageTag $PSScriptRoot "test"
+        $metadata = Get-DockerMetadata "$PSScriptRoot/hugo-sdk.Dockerfile"
+        $tag = "$($metadata.Name):test"
     
-        docker build --platform "$platform" --tag "$tag" "$PSScriptRoot"
+        docker build --file "$($metadata.Dockerfile)" --platform "$_" --tag "$tag" "$($metadata.Directory)"
     }
 
     AfterAll {
@@ -20,7 +18,7 @@ Describe "hugo-sdk on <platform>" -ForEach $targetPlatforms {
 
     It "has hugo as its entrypoint" {
         # Act
-        $output = docker run --platform "$platform" --rm "$tag" version
+        $output = docker run --rm "$tag" version
 
         # Assert
         $output | Should -Match "hugo v0.120.4\+extended .+"
@@ -28,7 +26,7 @@ Describe "hugo-sdk on <platform>" -ForEach $targetPlatforms {
 
     It "has Git" {
         # Act
-        $output = docker run --entrypoint "git" --platform "$platform" --rm "$tag" --version
+        $output = docker run --entrypoint "git" --rm "$tag" --version
 
         # Assert
         $output | Should -Match "git version 2\.43\..+"
