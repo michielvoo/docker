@@ -11,21 +11,25 @@ function Invoke-Task {
 
     switch ($Task) {
         "Build" {
+            $Env:BUILDX_GIT_LABELS = "full"
+
             $metadata = Get-DockerMetadata $Arguments[0]
 
-            Push-Location $data.Directory
+            # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
+            $builder = docker buildx create --node "multi-platform0" --name "multi-platform" --driver "docker-container"
+            $Env:BUILDX_BUILDER = "$builder"
 
             $build = "docker buildx build"
+            $build = "$build --attest type=provenance"
+            $build = "$build --file ""$($metadata.Dockerfile)"""
             foreach ($label in $metadata.Labels.GetEnumerator()) {
                 $build = "$build --label ""$($label.Name)=$($label.Value)"""
             }
-            $build = "$build --output ""type=image,name=$($metadata.Name):dev,push=false"""
-            $build = "$build --file ""$($metadata.Dockerfile)"""
+            $build = "$build --output ""type=local,dest=artifacts$($metadata.Namespace)$($metadata.Repository)"""
+            $build = "$build --platform ""$([string]::Join(",", $metadata.Platforms))"""
             $build = "$build ""$($metadata.Directory)"""
 
             Invoke-Expression $build
-
-            Pop-Location
         }
 
         "Test" {

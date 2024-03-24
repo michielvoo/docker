@@ -23,18 +23,6 @@ function Read-DockerMetadata {
     return $metadata
 }
 
-function Get-DockerName {
-    param (
-        [string]$Registry,
-        [string]$Namespace,
-        [string]$Repository
-    )
-
-    $array = @($Registry, $Namespace, $Repository) | Where-Object { $_ }
-
-    [string]::Join("/", $array)
-}
-
 function Get-DockerNamespace {
     param (
         [string]$Directory
@@ -43,10 +31,10 @@ function Get-DockerNamespace {
     $relativePath = [IO.Path]::GetRelativePath($PSScriptRoot, (Split-Path $Directory -Parent))
 
     if ($relativePath -eq ".") {
-        return $null
+        return "/"
     }
 
-    return $relativePath
+    return "/$relativePath/"
 }
 
 function Get-DockerRegistry {
@@ -119,7 +107,7 @@ function Get-DockerMetadata {
     $metadata.Namespace = Get-DockerNamespace $directory
     $metadata.Registry = Get-DockerRegistry
     $metadata.Repository = Split-Path $directory -Leaf
-    $metadata.Name = Get-DockerName $metadata.Registry $metadata.Namespace $metadata.Repository
+    $metadata.Name = "${metadata.Registry}${metadata.Namespace}${metadata.Repository}"
 
     # Add labels
     # Use BUILDX_GIT_LABELS=full to get OCI labels
