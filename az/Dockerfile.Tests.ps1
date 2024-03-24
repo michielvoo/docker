@@ -1,9 +1,9 @@
 BeforeAll {
-    Import-Module "$PSScriptRoot/../Utilities.psm1"
+    $metadata = Get-DockerMetadata "$PSScriptRoot/Dockerfile"
 
-    $tag = Get-DockerImageTag $PSScriptRoot "test"
+    $tag = "$($metadata.Name):test"
 
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 >$null
+    docker build --platform "linux/amd64" --tag "$tag" "$($metadata.Directory)"
 }
 
 AfterAll {
