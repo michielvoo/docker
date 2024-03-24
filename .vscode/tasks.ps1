@@ -25,7 +25,7 @@ function Invoke-Task {
             foreach ($label in $metadata.Labels.GetEnumerator()) {
                 $build = "$build --label ""$($label.Name)=$($label.Value)"""
             }
-            $build = "$build --output ""type=local,dest=artifacts$($metadata.Namespace)$($metadata.Repository)"""
+            $build = "$build --output ""type=tar,dest=artifacts/$($metadata.NamespaceAndRepository).tar"""
             $build = "$build --platform ""$([string]::Join(",", $metadata.Platforms))"""
             $build = "$build ""$($metadata.Directory)"""
 
