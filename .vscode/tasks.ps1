@@ -14,19 +14,18 @@ function Invoke-Task {
             $Env:BUILDX_GIT_LABELS = "full"
 
             $metadata = Get-DockerMetadata $Arguments[0]
+            $platform = $Arguments[1]
+            if (-not ($platform -in $metadata.Platforms)) {
+                throw "Platform '$platform' is not a valid target for '$($metadata.NamespaceAndRepository)'"
+            }
 
-            # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
-            $builder = docker buildx create --node "multi-platform0" --name "multi-platform" --driver "docker-container"
-            $Env:BUILDX_BUILDER = "$builder"
-
-            $build = "docker buildx build"
-            $build = "$build --attest type=provenance"
+            $build = "docker buildx --builder ""desktop-linux"" build"
             $build = "$build --file ""$($metadata.Dockerfile)"""
             foreach ($label in $metadata.Labels.GetEnumerator()) {
                 $build = "$build --label ""$($label.Name)=$($label.Value)"""
             }
-            $build = "$build --output ""type=tar,dest=artifacts/$($metadata.NamespaceAndRepository).tar"""
-            $build = "$build --platform ""$([string]::Join(",", $metadata.Platforms))"""
+            $build = "$build --output ""type=image,name=$($metadata.Name):dev,push=false"""
+            $build = "$build --platform ""$platform"""
             $build = "$build ""$($metadata.Directory)"""
 
             Invoke-Expression $build
