@@ -2,7 +2,7 @@ BeforeDiscovery {
     Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/Dockerfile")
 }
 
-Describe "hugo-sdk on <platform>" -ForEach $testCases {
+Describe "<metadata.name> on <platform>" -ForEach $testCases {
     BeforeAll {
         $tag = "$($metadata.Name):test"
     

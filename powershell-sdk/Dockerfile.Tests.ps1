@@ -2,14 +2,13 @@ BeforeDiscovery {
     Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/Dockerfile")
 }
 
-
-Describe "powershell-sdk on <platform>" -ForEach $testCases {
+Describe "<metadata.name> on <platform>" -ForEach $testCases {
     BeforeAll {
         $tag = "$($metadata.Name):test"
     
         docker build --file "$($metadata.Dockerfile)" --platform "$platform" --tag "$tag" "$($metadata.Directory)"
 
-        $containerId = docker run --detach --interactive "$tag"
+        Set-Variable "containerId" $(docker run --detach --interactive "$tag")
     }
 
     AfterAll {
