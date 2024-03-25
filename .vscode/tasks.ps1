@@ -11,15 +11,24 @@ function Invoke-Task {
 
     switch ($Task) {
         "Build" {
-            $file, $name = Get-DockerfilePath $Arguments[0]
+            $Env:BUILDX_GIT_LABELS = "full"
 
-            Push-Location $(Split-Path $file -Parent)
+            $metadata = Get-DockerMetadata $Arguments[0]
+            $platform = $Arguments[1]
+            if (-not ($platform -in $metadata.Platforms)) {
+                throw "Platform '$platform' is not a valid target for '$($metadata.NamespaceAndRepository)'"
+            }
 
-            docker build "." `
-                --tag "$name`:dev" `
-                --label "org.opencontainers.image.source=$file"
+            $build = "docker buildx --builder ""desktop-linux"" build"
+            $build = "$build --file ""$($metadata.Dockerfile)"""
+            foreach ($label in $metadata.Labels.GetEnumerator()) {
+                $build = "$build --label ""$($label.Name)=$($label.Value)"""
+            }
+            $build = "$build --output ""type=image,name=$($metadata.Name):dev,push=false"""
+            $build = "$build --platform ""$platform"""
+            $build = "$build ""$($metadata.Directory)"""
 
-            Pop-Location
+            Invoke-Expression $build
         }
 
         "Test" {

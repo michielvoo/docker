@@ -23,14 +23,44 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
+          Import-Module "$Env:GITHUB_WORKSPACE/Utilities.psm1"
+
+          # Register handlers for additional architectures
+          docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
+
           Invoke-Pester -Configuration @{
-             Run = @{
-                 Exit = $true
-             }
+              Output = @{
+                  Verbosity = "Detailed"
+              }
+              Run = @{
+                  Exit = $true
+              }
           }
 
       - name: Build
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
-          docker build .
+          Import-Module "$Env:GITHUB_WORKSPACE/Utilities.psm1"
+
+          $metadata = Get-DockerMetadata "${{ inputs.path }}"
+
+          # Register handlers for additional architectures
+          docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
+
+          # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
+          docker buildx create --name "multi-platform" --driver "docker-container"
+          $Env:BUILDX_BUILDER = "multi-platform"
+
+          # Target multiple platforms
+          $platform = [string]::Join(",", $metadata.Platforms)
+
+          # Export the manifest list to a registry
+          $name = "$($metadata.Name):ci"
+          $push = "true"
+
+          # Log in to the Docker Hub registry
+          Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+          # Build the image
+          docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" .

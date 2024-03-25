@@ -1,16 +1,18 @@
-BeforeAll {
-    Import-Module "$PSScriptRoot/../Utilities.psm1"
-
-    $tag = Get-DockerImageTag $PSScriptRoot "test"
-
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
+BeforeDiscovery {
+    Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/Dockerfile")
 }
 
-AfterAll {
-    docker image rm --force "$tag"
-}
+Describe "<metadata.name> on <platform>" -ForEach $testCases {
+    BeforeAll {
+        $tag = "$($metadata.Name):test"
+    
+        docker build --file "$($metadata.Dockerfile)" --platform "$platform" --tag "$tag" "$($metadata.Directory)"
+    }
 
-Describe "hugo" {
+    AfterAll {
+        docker image rm --force "$tag"
+    }
+
     It "has hugo as its entrypoint" {
         # Act
         $output = docker run --rm "$tag" version
@@ -21,7 +23,7 @@ Describe "hugo" {
 
     It "has Git" {
         # Act
-        $output = docker run --rm --entrypoint "git" "$tag" --version
+        $output = docker run --entrypoint "git" --rm "$tag" --version
 
         # Assert
         $output | Should -Match "git version 2\.43\..+"

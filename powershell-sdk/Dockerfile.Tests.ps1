@@ -1,19 +1,22 @@
-BeforeAll{
-    Import-Module "$PSScriptRoot/../Utilities.psm1"
-
-    $tag = Get-DockerImageTag $PSScriptRoot "test"
-
-    docker build "$PSScriptRoot" --tag "$tag" 2>&1 > $null
-    $containerId = docker run --detach --interactive "$tag"
+BeforeDiscovery {
+    Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/Dockerfile")
 }
 
-AfterAll {
-    docker stop "$containerId"
-    docker rm "$containerId"
-    docker image rm --force "$tag"
-}
+Describe "<metadata.name> on <platform>" -ForEach $testCases {
+    BeforeAll {
+        $tag = "$($metadata.Name):test"
+    
+        docker build --file "$($metadata.Dockerfile)" --platform "$platform" --tag "$tag" "$($metadata.Directory)"
 
-Describe "ci/powershell" {
+        Set-Variable "containerId" $(docker run --detach --interactive "$tag")
+    }
+
+    AfterAll {
+        docker stop "$containerId"
+        docker rm "$containerId"
+        docker image rm --force "$tag"
+    }
+
     It "has Pester" {
         # Act
         $version = docker exec "$containerId" pwsh -Command "(Get-Module Pester).Version.ToString()"

@@ -1,7 +1,6 @@
-FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
+# syntax=docker/dockerfile:1
 
-LABEL org.opencontainers.image.title="Azure"
-LABEL org.opencontainers.image.description="Azure PowerShell and Git on Alpine Linux, for provisioning Azure resources and deploying applications to Azure"
+FROM --platform=linux/amd64 mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 

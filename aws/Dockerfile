@@ -1,7 +1,6 @@
-FROM mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
+# syntax=docker/dockerfile:1
 
-LABEL org.opencontainers.image.title="AWS"
-LABEL org.opencontainers.image.description="AWS Tools for PowerShell and Git on Alpine Linux, for provisioning AWS resources and deploying applications to AWS"
+FROM --platform=linux/amd64 mcr.microsoft.com/powershell:lts-7.2-alpine-3.17
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 
