@@ -29,9 +29,12 @@ jobs:
           docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
 
           Invoke-Pester -Configuration @{
-             Run = @{
-                 Exit = $true
-             }
+              Output = @{
+                  Verbosity = "Detailed"
+              }
+              Run = @{
+                  Exit = $true
+              }
           }
 
       - name: Build
