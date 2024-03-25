@@ -7,6 +7,8 @@ on:
     tags:
       - pwsh:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/pwsh.yaml
       - pwsh/**
   pull_request:
     paths:

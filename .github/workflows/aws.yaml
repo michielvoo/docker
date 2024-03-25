@@ -7,6 +7,8 @@ on:
     tags:
       - aws:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/aws.yaml
       - aws/**
   pull_request:
     paths:

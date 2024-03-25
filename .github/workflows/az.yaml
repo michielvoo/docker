@@ -7,6 +7,8 @@ on:
     tags:
       - az:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/az.yaml
       - az/**
   pull_request:
     paths:

@@ -7,6 +7,8 @@ on:
     tags:
       - pester:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/pester.yaml
       - pester/**
   pull_request:
     paths:

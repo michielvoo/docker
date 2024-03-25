@@ -7,6 +7,8 @@ on:
     tags:
       - hugo-sdk:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/hugo-sdk.yaml
       - hugo-sdk/**
   pull_request:
     paths:
