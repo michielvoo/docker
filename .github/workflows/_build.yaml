@@ -55,14 +55,20 @@ jobs:
           # Target multiple platforms
           $platform = [string]::Join(",", $metadata.Platforms)
 
-          # Export the manifest list to a registry
-          $name = "$($metadata.Name):ci"
+          # Export the manifest list to a registry when a Git tag is pushed
           $push = "${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag"
 
           if ($push) {
               # Log in to the Docker Hub registry
               Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+              $version = "${{ github.ref_name }}".Split(":")[0]
           }
+          else {
+              $version = "ci"
+          }
+
+          $name = "$($metadata.Name):$version"
 
           # Build the image
           docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" .
