@@ -49,7 +49,7 @@ jobs:
           $platform = [string]::Join(",", $metadata.Platforms)
 
           # Export the manifest list to a registry
-          $name = "$(metadata.Name):ci"
+          $name = "$($metadata.Name):ci"
           $push = "true"
 
           # Log in to the Docker Hub registry
