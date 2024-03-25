@@ -7,16 +7,18 @@ on:
     tags:
       - az:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/az.yaml
       - az/**
   pull_request:
     paths:
-      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/_build.yaml
       - .github/workflows/az.yaml
       - az/**
 
 jobs:
   build-docker-image:
-    uses: ./.github/workflows/build-docker-image.yaml
+    uses: ./.github/workflows/_build.yaml
     with:
       path: az
     secrets: inherit

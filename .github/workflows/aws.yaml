@@ -7,16 +7,18 @@ on:
     tags:
       - aws:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/aws.yaml
       - aws/**
   pull_request:
     paths:
-      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/_build.yaml
       - .github/workflows/aws.yaml
       - aws/**
 
 jobs:
   build-docker-image:
-    uses: ./.github/workflows/build-docker-image.yaml
+    uses: ./.github/workflows/_build.yaml
     with:
       path: aws
     secrets: inherit

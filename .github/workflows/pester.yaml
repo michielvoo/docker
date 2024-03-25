@@ -7,16 +7,18 @@ on:
     tags:
       - pester:*
     paths:
+      - .github/workflows/_build.yaml
+      - .github/workflows/pester.yaml
       - pester/**
   pull_request:
     paths:
-      - .github/workflows/build-docker-image.yaml
+      - .github/workflows/_build.yaml
       - .github/workflows/pester.yaml
       - pester/**
 
 jobs:
   build-docker-image:
-    uses: ./.github/workflows/build-docker-image.yaml
+    uses: ./.github/workflows/_build.yaml
     with:
       path: pester
     secrets: inherit
