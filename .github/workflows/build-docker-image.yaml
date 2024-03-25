@@ -23,6 +23,7 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
+          Import-Module "$Env:GITHUB_WORKSPACE/Utilities.psm1"
           Invoke-Pester -Configuration @{
              Run = @{
                  Exit = $true
