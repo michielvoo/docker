@@ -34,49 +34,24 @@ jobs:
         shell: pwsh
         working-directory: ${{ inputs.path }}
         run: |
-          $multiPlatform = $false
+          $metadata = Get-DockerMetadata "${{ inputs.path }}"
 
-          if ($multiPlatform) {
-              # Register handlers for additional architectures
-              docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
+          # Register handlers for additional architectures
+          docker run --privileged "docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64"
 
-              # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
-              docker buildx create --name "multi-platform" --driver "docker-container"
-              $Env:BUILDX_BUILDER = "multi-platform"
+          # Create a new builder which uses the "docker-container" driver, which supports multi-platform builds
+          docker buildx create --name "multi-platform" --driver "docker-container"
+          $Env:BUILDX_BUILDER = "multi-platform"
 
-              # Target multiple platforms
-              $platform = "linux/amd64,linux/arm64"
+          # Target multiple platforms
+          $platform = [string]::Join(",", $metadata.Platforms)
 
-              # Export the manifest list to a registry
-              $name = "docker.io/${{ inputs.path }}:0.0.1"
-              $push = "true"
+          # Export the manifest list to a registry
+          $name = "$(metadata.Name):ci"
+          $push = "true"
 
-              # Log in to the Docker Hub registry
-              Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          }
-          else {
-              # Use the "default" builder which uses the "docker" driver
-              $Env:BUILDX_BUILDER = "default"
-
-              # Target the client's platform
-              $platform = "local"
-
-              # Do not export the image to a registry
-              # The image will appear in `docker images` thanks to the "default" builder's "docker" driver
-              $name = "${{ inputs.path }}:dev"
-              $push = "false"
-          }
+          # Log in to the Docker Hub registry
+          Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
           # Build the image
           docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" .
-
-          # Check the platform(s) of the image
-          if (-not $multiPlatform) {
-              $image = ConvertFrom-Json $(docker image inspect --format "json" "$name")
-              $image.Architecture
-          }
-          else {
-              $manifest = ConvertFrom-Json $(docker manifest inspect "$name")
-              $manifest.manifests[0].platform.architecture
-              $manifest.manifests[1].platform.architecture
-          }
