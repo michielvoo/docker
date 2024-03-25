@@ -12,7 +12,8 @@ defaults:
     shell: pwsh
 
 jobs:
-  build:
+  publish:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
