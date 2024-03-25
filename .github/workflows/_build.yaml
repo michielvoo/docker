@@ -62,7 +62,7 @@ jobs:
               # Log in to the Docker Hub registry
               Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-              $version = "${{ github.ref_name }}".Split(":")[0]
+              $version = (Split-Path "${{ github.ref_name }}" -Leaf).Substring(1)
           }
           else {
               $version = "ci"
