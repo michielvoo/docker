@@ -61,14 +61,11 @@ function Get-DockerNamespaceAndRepository {
 }
 
 function Get-DockerRegistry {
-    if ($Env:GITHUB_REPOSITORY_OWNER) {
-        $tenant = $Env:GITHUB_REPOSITORY_OWNER
-    }
-    else {
-        $tenant = Split-Path -Leaf (Split-Path $PSScriptRoot -Parent)
+    if (-not $Env:DOCKER_REGISTRY) {
+        throw "DOCKER_REGISTRY environment variable is not set"
     }
 
-    return "docker.io/$tenant"
+    return $Env:DOCKER_REGISTRY
 }
 
 function Get-DockerMetadata {
