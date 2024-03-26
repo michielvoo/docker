@@ -12,9 +12,24 @@ defaults:
     shell: pwsh
 
 jobs:
-  publish:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.select.outputs.environment }}
+    steps:
+      - name: Select environment
+        id: select
+        run: |
+          $InformationPreference = "Continue"
+          $environment = "${{ github.ref_type }}" -eq "tag" ? "Docker Hub" : "GitHub Packages"
+          Write-Output "environment=$environment" >> "$Env:GITHUB_OUTPUT"
+
+  build:
     name: Build
     runs-on: ubuntu-latest
+    needs: prepare
+    environment: ${{ needs.prepare.outputs.environment }}
 
     steps:
       - uses: actions/checkout@v4
@@ -55,20 +70,20 @@ jobs:
           # Target multiple platforms
           $platform = [string]::Join(",", $metadata.Platforms)
 
-          # Export the manifest list to a registry when a Git tag is pushed
-          $push = "${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag"
-
-          if ($push) {
-              # Log in to the Docker Hub registry
-              Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
+          if ("${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag") {
               $version = (Split-Path "${{ github.ref_name }}" -Leaf).Substring(1)
+              if ($version -ne "v$($metadata.Version)") {
+                  throw "Git tag does not match the version declared in the Dockerfile's metadata"
+              }
           }
           else {
-              $version = "ci"
+              $version = "$($metadata.Version)-${{ github.ref_name }}-${{ github.run_number }}"
           }
 
-          $name = "$($metadata.Name):$version"
+          # Log in to the Docker Hub registry
+          Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+          $name = "$($metadata.Name):$($metadata.Version)"
 
           # Build the image
           docker buildx build --platform "$platform" --output "type=image,name=$name,push=$push" .
