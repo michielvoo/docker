@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/powershell:lts-7.2-debian-11
+ARG PS_VERSION
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/powershell:${PS_VERSION}-debian-11
 
 ENV POWERSHELL_TELEMETRY_OPTOUT=1
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1

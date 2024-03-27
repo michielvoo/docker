@@ -16,10 +16,6 @@ function Read-DockerMetadata {
         $metadata.Labels = @{}
     }
 
-    if (-not $metadata.Platforms) {
-        throw "No platform(s) specified in metadata"
-    }
-
     return $metadata
 }
 
@@ -146,10 +142,20 @@ function Get-DockerTestCases {
 
     $metadata = Get-DockerMetadata $dockerfileOrName
 
-    $testCases = $metadata.Platforms | ForEach-Object {@{
-        Metadata = $metadata
-        Platform = $_
-    }}
+    $testCases = @()
+    $metadata.Variants | ForEach-Object {
+        $variant = $_
+        $variant.Platforms | ForEach-Object {
+            if (-not $variant.Platforms) {
+                throw "No platform(s) specified in variant $($variant.Version)"
+            }
+            $testCases += @{
+                Metadata = $metadata
+                Platform = $_
+                Variant = $variant
+            }
+        }
+    }
 
     return $testCases
 }
