@@ -2,11 +2,22 @@ BeforeDiscovery {
     Set-Variable "testCases" (Get-DockerTestCases "$PSScriptRoot/Dockerfile")
 }
 
-Describe "<metadata.name> on <platform>" -ForEach $testCases {
+Describe "<metadata.name>:<variant.version> on <platform>" -ForEach $testCases {
     BeforeAll {
         $tag = "$($metadata.Name):test"
+
+        $build = "docker build"
+        foreach ($buildArg in $variant.BuildArgs.GetEnumerator()) {
+            $build += " --build-arg ""$($buildArg.Name)=$($buildArg.Value)"""
+        }
+        $build += " --file ""$($metadata.Dockerfile)"""
+        $build += " --platform ""$platform"""
+        $build += " --tag ""$tag"""
+        $build += " ""$($metadata.Directory)"""
+
+        Write-Warning $build
     
-        docker build --file "$($metadata.Dockerfile)" --platform "$platform" --tag "$tag" "$($metadata.Directory)"
+        Invoke-Expression $build
 
         Set-Variable "containerId" $(docker run --detach --interactive "$tag")
     }
