@@ -82,7 +82,7 @@ jobs:
               $version = $metadata.Version
           }
           else {
-              $version = "$($metadata.Version)-${{ github.ref_name }}-${{ github.run_number }}"
+              $version = "$($metadata.Version)-${{ github.head_ref }}-${{ github.run_number }}"
           }
 
           # Log in to the Docker Hub registry
