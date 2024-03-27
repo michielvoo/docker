@@ -74,16 +74,17 @@ jobs:
           # Target multiple platforms
           $platform = [string]::Join(",", $metadata.Platforms)
 
-          if ("${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag") {
-              $version = (Split-Path "${{ github.ref_name }}" -Leaf).Substring(1)
-              if ($version -ne "v$($metadata.Version)") {
-                  throw "Git tag does not match the version declared in the Dockerfile's metadata"
+          $version = $metadata.Version
+          if ("${{ github.event_name }}" -eq "pull_request") {
+              $version = "$version-${{ github.head_ref }}-${{ github.run_number }}"
+          }
+          else if ("${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag") {
+              $tag = (Split-Path "${{ github.ref_name }}" -Leaf).Substring(1)
+              if ("$tag" -ne "v$version") {
+                  throw "Git tag '${{ github.ref_name }}' does not match version '$version' declared in the Dockerfile's metadata"
               }
-              $version = $metadata.Version
           }
-          else {
-              $version = "$($metadata.Version)-${{ github.head_ref }}-${{ github.run_number }}"
-          }
+
 
           # Log in to the Docker Hub registry
           Write-Output "${{ secrets.DOCKER_PASSWORD }}" | docker login "$Env:DOCKER_REGISTRY" --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
