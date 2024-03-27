@@ -2,8 +2,6 @@
 
 Bespoke Docker images
 
-[![default workflow][badge]][workflow]
-
 This Git repository contains definitions for Docker images, as well as GitHub workflows that 
 test and build the Docker images, and push them to the Docker registry on [Docker Hub][hub] that 
 corresponds to this GitHub repository's owner.

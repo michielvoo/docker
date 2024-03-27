@@ -78,7 +78,7 @@ jobs:
           if ("${{ github.event_name }}" -eq "pull_request") {
               $version = "$version-${{ github.head_ref }}-${{ github.run_number }}"
           }
-          else if ("${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag") {
+          elseif ("${{ github.event_name }}" -eq "push" -and "${{ github.ref_type }}" -eq "tag") {
               $tag = (Split-Path "${{ github.ref_name }}" -Leaf).Substring(1)
               if ("$tag" -ne "v$version") {
                   throw "Git tag '${{ github.ref_name }}' does not match version '$version' declared in the Dockerfile's metadata"
