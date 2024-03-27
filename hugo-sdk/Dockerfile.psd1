@@ -7,4 +7,5 @@
         "linux/amd64"
         "linux/arm64"
     )
+    Version = "0.0.1"
 }

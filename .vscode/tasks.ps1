@@ -1,5 +1,13 @@
 Import-Module "$PSScriptRoot/../Utilities.psm1"
 
+# Set environment variable from .vscode/environment.txt
+$environment = "$PSScriptRoot/environment.psd1"
+if (Test-Path $environment) {
+    foreach ($variable in (Import-PowerShellDataFile $environment).GetEnumerator()) {
+        Set-Item "Env:$($variable.Name)" $variable.Value
+    }
+}
+
 function Invoke-Task {
     param (
         [Parameter(Mandatory, Position = 0)]
